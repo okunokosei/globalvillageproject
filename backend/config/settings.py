@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'corsheaders',
 
     'accounts.apps.AccountsConfig',
 
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -166,3 +168,13 @@ STORAGES = {
 }
 
 CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app']
+
+# CORS設定
+# Vercelのドメインからのアクセスを許可します
+CORS_ALLOWED_ORIGINS = [
+    "https://globalvillageproject.vercel.app",
+    "http://localhost:3000",  # ローカル開発用
+]
+
+# Cookie（ログイン情報）を含む通信を許可する場合
+CORS_ALLOW_CREDENTIALS = True
