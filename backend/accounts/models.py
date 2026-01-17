@@ -1,7 +1,15 @@
 import uuid
+import os
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.core.validators import RegexValidator
+
+# パスを計算
+def icon_upload_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{ext}'
+    return os.path.join('icons', str(instance.id), filename)
+
 
 # -------------------------------------
 # ユーザーマネージャー
@@ -26,7 +34,7 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         
-        return self.create_user(email, password=None, **extra_fields)
+        return self.create_user(email, password, **extra_fields)
 
 
 # -------------------------------------
@@ -72,7 +80,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     move_in_date = models.DateField(verbose_name="入寮年月", null=True, blank=True, help_text="日は便宜上「1日」として扱われます")
     move_out_date = models.DateField(verbose_name="退寮予定年月",null=True, blank=True)
     
-    icons_url = models.URLField(verbose_name="アイコンURL", null=True, blank=True)
+    # icons_url = models.URLField(verbose_name="アイコンURL", null=True, blank=True)
+    icon = models.ImageField(
+        verbose_name="アイコン画像",
+        upload_to=icon_upload_path,
+        null=True,
+        blank=True
+    )
 
     is_active = models.BooleanField(default=True, verbose_name="有効フラグ")
     is_staff = models.BooleanField(default=False, verbose_name="管理画面アクセス権")
