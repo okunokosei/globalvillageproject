@@ -12,4 +12,6 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('role', 'is_active', 'is_staff')
     ordering = ('email',)
 
+    fields = ('name', 'email', 'room_number', 'student_id', 'role', 'is_staff', 'is_active', 'icon')
+
 admin.site.register(User, UserAdmin)
