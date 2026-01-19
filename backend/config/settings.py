@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 import environ
+from datetime import timedelta
 
 env = environ.Env()
 env.read_env(os.path.join(Path(__file__).resolve().parent.parent, '.env'))
@@ -45,6 +46,9 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    
+    'djoser',
+    'rest_framework_simplejwt',
 
     'accounts.apps.AccountsConfig',
 
@@ -94,14 +98,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
-    }
+    'default': env.db(),
 }
 
 
@@ -167,7 +164,7 @@ STORAGES = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://gv-life-backend-405456730895.asia-northeast1.run.app']
 
 # CORS設定
 # Vercelのドメインからのアクセスを許可します
@@ -178,3 +175,26 @@ CORS_ALLOWED_ORIGINS = [
 
 # Cookie（ログイン情報）を含む通信を許可する場合
 CORS_ALLOW_CREDENTIALS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'AUTH_HEADER_TYPES': ('JWT',),
+}
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SERIALIZERS': {
+        'user_create': 'djoser.serializers.UserCreateSerializer',
+        'user': 'djoser.serializers.UserSerializer',
+    }
+}
