@@ -86,7 +86,7 @@ const RegisterPage = () => {
 
             if (res.ok) {
                 alert('登録成功! ログイン画面へ移動します。');
-                router.push('/login');
+                router.push('/register/success');
             } else {
                 const errorData = await res.json();
                 console.error(errorData);

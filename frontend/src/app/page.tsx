@@ -1,25 +1,20 @@
-"use client";
-import { useEffect, useState } from 'react';
+import Link from "next/link";
 
 const Home = () => {
-  const [message, setMessage] = useState("Loading...");
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/health/`)
-    .then((res) => res.json())
-    .then((data) => setMessage(data.message))
-    .catch((err) => setMessage("Error: failed to fetch data"));
-  }, []);
-
   return (
-    <div className="p-[50px] font-sans">
-      <h1 className="text-3xl font-bold">Global Village Project</h1>
-      <h2 className="text-3xl font-bold">Data Fetch Test</h2>
-      <p className="text-[20px] text-blue-600">
-        Backend Response: <strong className="font-bold">{message}</strong>
-      </p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+      <h1 className="text-4xl font-bold mb-6">Global Village Life</h1>
+      <p className="text-lg text-gray-600 mb-8">寮生活をより快適に、よりスマートに。</p>
+      <div className="flex gap-4">
+        <Link href="/login" className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700">
+          ログイン
+        </Link>
+        <Link href="/register" className="px-6 py-3 bg-white text-blue-600 border border-blue-600 rounded hover:bg-gray-50">
+          新規会員登録
+        </Link>
+      </div>
     </div>
-  );
+  )
 };
 
-export default Home;
+export default Home
