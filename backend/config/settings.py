@@ -190,11 +190,21 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
+    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'PASSWORD_REST_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+
     'SERIALIZERS': {
-        'user_create': 'djoser.serializers.UserCreateSerializer',
-        'user': 'djoser.serializers.UserSerializer',
+        'user_create_password_retype': 'accounts.serializers.FinalUserCreateSerializer',
+        'user': 'accounts.serializers.CustomUserSerializer',
+        'current_user': 'accounts.serializers.CustomUserSerializer',
     }
 }
+

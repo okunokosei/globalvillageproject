@@ -77,8 +77,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     position = models.CharField(verbose_name="役割", max_length = 20, choices=PositionType.choices, default=PositionType.RESIDENT)
     language_preference = models.CharField(verbose_name="言語設定", max_length=2, choices=LanguageType.choices, default=LanguageType.ENGLISH)
 
-    move_in_date = models.DateField(verbose_name="入寮年月", null=True, blank=True, help_text="日は便宜上「1日」として扱われます")
-    move_out_date = models.DateField(verbose_name="退寮予定年月",null=True, blank=True)
+    move_in_date = models.DateField(verbose_name="入寮年月", help_text="日は便宜上「1日」として扱われます")
+    move_out_date = models.DateField(verbose_name="退寮予定年月")
     
     # icons_url = models.URLField(verbose_name="アイコンURL", null=True, blank=True)
     icon = models.ImageField(
