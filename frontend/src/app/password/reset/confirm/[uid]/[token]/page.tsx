@@ -20,7 +20,7 @@ const PasswordResetConfirmPage = () => {
         setIsLoading(true);
 
         try {
-            const res = await fetch(`${apiurl}/api/auth/users/reset_password_confirm`, {
+            const res = await fetch(`${apiurl}/api/auth/users/reset_password_confirm/`, {
                 method: 'POST',
                 headers: {
                     'ContentType': 'application/json',
