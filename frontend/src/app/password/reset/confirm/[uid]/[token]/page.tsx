@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 
 const PasswordResetConfirmPage = () => {
@@ -13,6 +13,17 @@ const PasswordResetConfirmPage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        // console.log("送信するデータ:", {
+        //     uid: params.uid,
+        //     token: params.token,
+        //     new_password: password
+        // });
+
+        const rawUid = Array.isArray(params.uid) ? params.uid[0] : params.uid;
+        const rawToken = Array.isArray(params.token) ? params.token[0] : params.token;
+        const uid = decodeURIComponent(rawUid || '');
+        const token = decodeURIComponent(rawToken || '');
+
         if(password !== rePassword) {
             alert('パスワードが一致しません。もう一度入力してください。');
             return;
@@ -23,11 +34,11 @@ const PasswordResetConfirmPage = () => {
             const res = await fetch(`${apiurl}/api/auth/users/reset_password_confirm/`, {
                 method: 'POST',
                 headers: {
-                    'ContentType': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    uid: params.uid,
-                    token: params.token,
+                    uid: uid,
+                    token: token,
                     new_password: password,
                     re_new_password: rePassword,
                 }),
@@ -36,6 +47,8 @@ const PasswordResetConfirmPage = () => {
                 alert('パスワードの変更が完了しました。\n新しいパスワードでログインしてください。');
                 router.push('/login');
             } else {
+                const errorData = await res.json();
+                console.error('サーバーからのエラー詳細:', errorData);
                 alert('パスワードリセットに失敗しました。\nリンクの有効期限が切れている可能性があります。');
             }
         } catch (err) {
