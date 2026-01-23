@@ -18,6 +18,7 @@ from datetime import timedelta
 env = environ.Env()
 env.read_env(os.path.join(Path(__file__).resolve().parent.parent, '.env'))
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -197,9 +198,14 @@ DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': True,
     'SEND_CONFIRMATION_EMAIL': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
 
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
-    'PASSWORD_REST_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+
+    'EMAIL_FRONTEND_SITE_NAME': 'Global Village Project',
+    'EMAIL_FRONTEND_DOMAIN': env('FRONTEND_DOMAIN'),
+    'EMAIL_FRONTEND_PROTOCOL': env('FRONTEND_PROTOCOL'),
 
     'SERIALIZERS': {
         'user_create_password_retype': 'accounts.serializers.FinalUserCreateSerializer',
@@ -208,3 +214,11 @@ DJOSER = {
     }
 }
 
+
+
+# settings.py の一番下に追加
+
+print("----- DEBUG START -----")
+print("1. ENV Check:", env('FRONTEND_DOMAIN')) # あなたが確認したやつ
+print("2. DJOSER Dict Check:", DJOSER.get('EMAIL_FRONTEND_DOMAIN')) # ★ここが最重要！
+print("----- DEBUG END -----")

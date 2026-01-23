@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link'
 
 const RegisterPage = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -99,6 +100,29 @@ const RegisterPage = () => {
 
     return (
         <div className="p-10 max-w-md mx-auto">
+
+            {/* アイコン用、将来的にはReactライブラリに置き換える */}
+            <div className="sm:mx-auto sm:w-full sm:max-w-md mb-6">
+                <Link 
+                    href="/" 
+                    className="flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                    {/* SVGアイコン（左矢印） */}
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        strokeWidth={1.5} 
+                        stroke="currentColor" 
+                        className="w-4 h-4 mr-1"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    ホームに戻る
+                </Link>
+            </div>
+            {/* ここまで */}
+
             <h1 className="text-2xl font-bold mb-5">新規会員登録</h1>
             <form onSubmit={handleRegister} className="flex flex-col gap-4">
                 {/* name */}
