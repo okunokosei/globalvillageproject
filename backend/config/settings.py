@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 
     'accounts.apps.AccountsConfig',
+    'contents.apps.ContentsConfig',
 
     'storages',
 ]
@@ -144,10 +145,17 @@ AUTH_USER_MODEL = 'accounts.User'
 # -------------------------------------
 # Cloudflare R2 Storage Settings
 # -------------------------------------
+# 認証
 AWS_ACCESS_KEY_ID = env('R2_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('R2_SECRET_ACCESS_KEY')
+# 倉庫の中の「どの箱（バケット）」を使うか指定しています。
 AWS_STORAGE_BUCKET_NAME = env('R2_STORAGE_BUCKET_NAME')
+# R2のAPIの場所
 AWS_S3_ENDPOINT_URL = env('R2_S3_ENDPOINT_URL')
+# 公開用ドメイン
+AWS_S3_CUSTOM_DOMAIN = env('R2_PUBLIC_DOMAIN')
+# 期限付きURLにしない設定
+AWS_QUERYSTRING_AUTH = False
 
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_REGION_NAME = 'auto'
@@ -216,9 +224,9 @@ DJOSER = {
 
 
 
-# settings.py の一番下に追加
+# # settings.py の一番下に追加
 
-print("----- DEBUG START -----")
-print("1. ENV Check:", env('FRONTEND_DOMAIN')) # あなたが確認したやつ
-print("2. DJOSER Dict Check:", DJOSER.get('EMAIL_FRONTEND_DOMAIN')) # ★ここが最重要！
-print("----- DEBUG END -----")
+# print("----- DEBUG START -----")
+# print("1. ENV Check:", env('FRONTEND_DOMAIN')) # あなたが確認したやつ
+# print("2. DJOSER Dict Check:", DJOSER.get('EMAIL_FRONTEND_DOMAIN')) # ★ここが最重要！
+# print("----- DEBUG END -----")
