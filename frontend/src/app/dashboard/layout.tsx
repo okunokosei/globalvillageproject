@@ -22,8 +22,8 @@ const DashboardLayout = ({children} : { children: React.ReactNode }) => {
                 <div className="grid grid-cols-4 h-full">
                     <NavLink href="/dashboard" label="Home" />
                     <NavLink href="/dashboard/event" label="Event" />
-                    <NavLink href="/dashboard/guide" label="Gallery" />
-                    <NavLink href="/dashboard/album" label="Album" />
+                    <NavLink href="/dashboard/gallery" label="Gallery" />
+                    <NavLink href="/dashboard/profile" label="Profile" />
                 </div>
             </nav>
         </div>
