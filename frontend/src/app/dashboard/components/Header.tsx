@@ -1,0 +1,14 @@
+
+
+const Header = () => {
+    return (
+        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+            <div className="px-4 py-3">
+                <h1 className="text-xl font-extrabold text-slate-800 tracking-tight">Home</h1>
+                <p className="text-xs font-medium text-slate-500">お知らせと生活ガイド</p>
+            </div>
+        </header>
+    )
+};
+
+export default Header;
