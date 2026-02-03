@@ -14,7 +14,7 @@ def guide_image_path(instance, filename):
     filename = f'{uuid.uuid4()}.{ext}'
     return os.path.join('guides', filename)
 
-
+# 親
 class NoticeTag(models.Model):
     name = models.CharField(verbose_name="タグ", max_length=50)
     slug = models.CharField(max_length=50)
@@ -26,6 +26,7 @@ class NoticeTag(models.Model):
     class Meta:
         verbose_name = verbose_name_plural = 'お知らせタグ'
 
+# 子供
 class Notice(models.Model):
     tag = models.ForeignKey(NoticeTag, verbose_name="タグ", related_name="notices", on_delete=models.PROTECT)
     title_en = models.CharField(verbose_name="英語タイトル", max_length=200)
@@ -50,6 +51,7 @@ class Notice(models.Model):
     class Meta:
         verbose_name = verbose_name_plural = 'お知らせ'
 
+# 親
 class GuideCategories(models.Model):
     name_en = models.CharField(verbose_name="ガイドカテゴリ(英語)", max_length=50)
     name_jp = models.CharField(verbose_name="ガイドカテゴリ(日本語)", max_length=50)
@@ -61,6 +63,7 @@ class GuideCategories(models.Model):
     class Meta:
         verbose_name = verbose_name_plural = 'ガイドカテゴリ'
 
+# 子供
 class Guides(models.Model):
     category = models.ForeignKey(GuideCategories, verbose_name="ガイドカテゴリ", related_name="guide", on_delete=models.PROTECT)
     title_en = models.CharField(verbose_name="英語タイトル", max_length=200)
