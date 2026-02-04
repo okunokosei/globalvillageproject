@@ -4,7 +4,7 @@ import { Notice } from "../types";
 
 const NewsDetailModal = ({notice, onClose}: {notice: Notice, onClose: () => void }) => {
     return (
-        <ModalBase onClose={onClose}>
+        <ModalBase onClose={onClose} maxWidth="max-w-md">
             {notice.image && (
                 <div className="w-full h-56 bg-gray-100">
                     <img src={notice.image} alt="" className="w-full h-full object-cover"/>

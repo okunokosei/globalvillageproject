@@ -3,7 +3,7 @@ import { Guide } from "../types";
 
 const GuideDetailModal = ({guide, onClose}: {guide: Guide, onClose: () => void}) => {
     return (
-        <ModalBase onClose={onClose}>
+        <ModalBase onClose={onClose} maxWidth="max-w-md">
             {guide.image && (
                 <div className="w-full h-48 bg-gray-100">
                     <img src={guide.image} alt="" className="w-full h-full object-cover" />

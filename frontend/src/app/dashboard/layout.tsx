@@ -1,5 +1,6 @@
 import React from "react"
 import Link from 'next/link';
+import AdminFab from "./components/AdminFab";
 
 type NavLinkProps = {
     href: string;
@@ -26,6 +27,7 @@ const DashboardLayout = ({children} : { children: React.ReactNode }) => {
                     <NavLink href="/dashboard/profile" label="Profile" />
                 </div>
             </nav>
+            <AdminFab />
         </div>
     )
 }

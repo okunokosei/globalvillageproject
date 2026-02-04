@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { NoticeTag, Notice, GuideCategory, Guide } from "./types";
 
@@ -11,6 +11,7 @@ import NewsDetailModal from "./components/NewsModal";
 import GuideDetailModal from "./components/GuideModal";
 import GuideCategoryItem from "./components/GuideItem";
 
+import Cookies from 'js-cookie';
 
 // モックデータ-------------------------------------
 const MOCK_NOTICES: Notice[] = [
@@ -91,6 +92,9 @@ const MOCK_GUIDE_DATA: GuideCategory[] = [
     ]
   },
 ];
+// ----------------------------------------------------
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 
 const HomePage = () => {
@@ -99,15 +103,83 @@ const HomePage = () => {
     const [selectedGuide, setSelectedGuide] = useState<any | null>(null);
     const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
 
+    const [notices, setNotices] = useState<Notice[]>([]);
+    const [guideCategories, setGuideCategories] = useState<GuideCategory[]>([])
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+                const token = Cookies.get('accessToken');
+                // console.log("現在のトークン:", token);
+
+                const noticesRes = await fetch(`${BACKEND_URL}/api/notices/`,{
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? {'Authorization': `Bearer ${token}`,} : {})
+                        // ()は優先順位のカッコ。[]は配列（順番が大事）。{}はオブジェクト（キーが大事）。
+                    }
+                });
+                if(!noticesRes.ok){
+                    throw new Error (`ニュース取得エラー${noticesRes.status}`);
+                }
+                const noticesData = await noticesRes.json();
+
+                const guideCategoriesRes = await fetch(`${BACKEND_URL}/api/guides/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? {'Authorization': `Bearer ${token}`,} : {})
+                    }
+                });
+                if(!guideCategoriesRes.ok){
+                    throw new Error (`ガイド取得エラー${guideCategoriesRes.status}`);
+                }
+                const guideCategoriesResData = await guideCategoriesRes.json();
+
+                // console.log("取得ニュースデータ:",noticesData);
+                setNotices(noticesData.results);
+                setGuideCategories(guideCategoriesResData.results);
+
+            }catch (err) {
+                console.error(err);
+                setError("データの読み込みに失敗しました。時間を空けて再度お試しください。")
+            }finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, [])
+
     const closeModal= () => {
         setSelectedNotice(null);
         setSelectedGuide(null);
     };
 
+    if(isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full "></div>
+            </div>
+        );
+    }
+
+    if(error){
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 text-red-500 px-4 text-center">
+                <p>{error}</p>
+            </div>
+        );
+    }
+
     const newsContent = (
         <div className="space-y-3 pt-4 pb-24">
             {
-                MOCK_NOTICES.map((notice) => (
+                notices.map((notice) => (
                     <NewsCard key={notice.id} notice={notice} onClick={() => setSelectedNotice(notice)} />
                 ))
             }
@@ -117,7 +189,7 @@ const HomePage = () => {
     const guideContent = (
         <div className="pt-4 pb-24">
             {
-                MOCK_GUIDE_DATA.map((category) => (
+                guideCategories.map((category) => (
                     <GuideCategoryItem 
                         key={category.id}
                         category={category}

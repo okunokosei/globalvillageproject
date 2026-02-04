@@ -1,13 +1,13 @@
 import { X } from "lucide-react";
 
-const ModalBase = ({ children, onClose }: {children: React.ReactNode, onClose: () => void}) => {
+const ModalBase = ({ children, onClose, maxWidth }: {children: React.ReactNode, onClose: () => void, maxWidth: string}) => {
     return (
         <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200"
             onClick={onClose}
         >
             <div
-                className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]"
+                className={`bg-white w-full ${maxWidth} rounded-2xl shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]`}
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
