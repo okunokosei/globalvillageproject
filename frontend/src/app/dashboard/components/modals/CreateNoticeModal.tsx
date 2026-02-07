@@ -2,7 +2,9 @@
 // タブのGET、送信したら更新したい、作成者ユーザーどうやって見分ける？、作成日と更新日を自動で付けたい
 
 import ModalBase from "../ModalBase";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+import { NoticeTag } from "../../types";
 
 import Cookies from 'js-cookie';
 
@@ -16,9 +18,10 @@ const MOCK_TAGS = [
 const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    console.log("url:",apiUrl);
+    // console.log("url:",apiUrl);
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isTagLoading, setIsTagLoading] = useState(false);
 
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -32,6 +35,37 @@ const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
     const [isPinned, setIsPinned] = useState(false);
     // const [createdBy, setCreatedBy] =useState('');
     // const [updatedBy, setUpdatedBy] = useState('');
+
+    const [noticesTags, setNoticeTags] = useState<NoticeTag[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try{
+                setIsTagLoading(true);
+                const token = Cookies.get('accessToken');
+                const noticeTagsRes = await fetch(`${apiUrl}/api/noticetags/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? {'Authorization': `Bearer ${token}`,} : {})
+                    }
+                });
+                if(!noticeTagsRes.ok){
+                    throw new Error (`ニュース取得エラー${noticeTagsRes.status}`);
+                }
+                const noticeTagsData = await noticeTagsRes.json();
+
+                setNoticeTags(noticeTagsData.results);
+                console.log("getTags :", noticeTagsData);
+            }catch (err) {
+                console.error(err);
+                setErrorMsg("Tagデータの読み込みに失敗しました。時間を空けて再度お試しください。")
+            }finally {
+                setIsTagLoading(false);
+            }
+        };
+        fetchData();
+    },[])
 
     const isRequiredFieldsFilled = selectedTagId && titleEn && titleJp && bodyEn;
 
@@ -80,6 +114,14 @@ const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
         }
     };
 
+    if(isTagLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full "></div>
+            </div>
+        );
+    }
+
     const renderContent = () => {
         if(successMsg){
             return(
@@ -109,7 +151,7 @@ const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
                 <form onSubmit={handleCreateNotice} className="flex flex-col gap-4">
                     <div>
                         <label className="block text-sm font-medium mb-2">タグを選択</label>
-                        {MOCK_TAGS.map((tag) => (
+                        {noticesTags.map((tag) => (
                             <button
                                 key={tag.id}
                                 type="button"
