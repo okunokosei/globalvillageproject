@@ -4,6 +4,7 @@ export type NoticeTag = {
     slug: string;
     color_code: string;
 };
+
 export type Notice = {
     id: number;
     tag: NoticeTag;
@@ -15,6 +16,7 @@ export type Notice = {
     is_pinned: boolean;
     created_at: string;
 };
+
 export type GuideCategory = {
     id: number;
     name_en: string;
@@ -22,6 +24,14 @@ export type GuideCategory = {
     icon_name: string;
     guides: Guide[];
 };
+
+export type SimpleGuideCategory = {
+    id: number;
+    name_en: string;
+    name_jp: string;
+    icon_name: string;
+};
+
 export type Guide = {
     id: number;
     title_en: string;

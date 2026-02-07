@@ -129,7 +129,7 @@ const HomePage = () => {
                 }
                 const noticesData = await noticesRes.json();
 
-                const guideCategoriesRes = await fetch(`${BACKEND_URL}/api/guides/`, {
+                const guideCategoriesRes = await fetch(`${BACKEND_URL}/api/guide-page/`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

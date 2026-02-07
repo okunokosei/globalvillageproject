@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 import CreateNoticeModal from "./modals/CreateNoticeModal";
+import CreateGuideModal from "./modals/CreateGuideModal";
 
 const NewPostButton = ({object, onClick}: {object: string, onClick: () => void}) => {
     return (
@@ -43,6 +44,9 @@ const AdminFab = () => {
             </div>
             {(ActiveModal === "notice") && (
                 <CreateNoticeModal onClose={() => setActiveModal(null)}/>
+            )}
+            {(ActiveModal === "guide") && (
+                <CreateGuideModal onClose={() => setActiveModal(null)}/>
             )}
         </div>
     )
