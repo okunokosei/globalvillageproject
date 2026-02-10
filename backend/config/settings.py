@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'contents.apps.ContentsConfig',
+    'events.apps.EventsConfig',
 
     'storages',
 ]
