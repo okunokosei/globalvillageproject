@@ -37,6 +37,7 @@ class Events(models.Model):
         related_name='joined_events',
         blank=True
     )
+    # 「through='EventParticipant',」に存在する情報をもとに「settings.AUTH_USER_MODEL,」から該当する行を取ってきてくれる。
 
     def __str__(self):
         return self.title_jp

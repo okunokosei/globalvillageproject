@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import EventListView, EventParticipantListView
+from .views import EventListCreateView, MyJoinedEventsView, EventParticipantListView, EventJoinView
 
 urlpatterns = [
-    path('events-detail/', EventListView.as_view(), name='event_list'),
-    path('events-participant/', EventParticipantListView.as_view, name='events_participant'),
+    path('', EventListCreateView.as_view(), name='event_list'),
+    path('my-joined/', MyJoinedEventsView.as_view(), name='my_joined_events'),
+    path('<int:event_id>/participants/', EventParticipantListView.as_view(), name='event_participants'),
+    path('<int:event_id>/join/', EventJoinView.as_view(), name='event-join'),
 ]

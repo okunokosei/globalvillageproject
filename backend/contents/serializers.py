@@ -52,6 +52,7 @@ class GuidePageSerializer(serializers.ModelSerializer):
         # category.guide.all()とするだけで、親の現在の主キーidを確認して、related_name（guide）で指定されている中から、親の現在の主キーと一致するものを探してくれる。
         # foreign keyでの結びつけが、親の主キーidで行われていることが保証してくれる。
 
+
 class GuideCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = GuideCategories
