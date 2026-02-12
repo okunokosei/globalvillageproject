@@ -204,7 +204,7 @@ const HomePage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Header />
+            <Header title="Home" subtitle="お知らせと生活ガイド" />
             <div className="sticky top-[57px] z-40 bg-gray-50 pt-2 px-2 pb-2">
                 <div className="flex bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
                     <TabButton 

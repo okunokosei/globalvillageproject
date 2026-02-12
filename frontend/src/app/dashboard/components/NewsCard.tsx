@@ -5,7 +5,7 @@ const NewsCard = ({notice, onClick}: {notice: Notice, onClick: () => void}) => {
     return (
         <button
             onClick={onClick}
-            className={`w-full text-left bg-white rounded-xl border p-4 shadow-sm hover:shadow-md active:scale-[0.99] transition-all flex gap-4 ${
+            className={`w-full h-32 text-left bg-white rounded-xl border p-4 shadow-sm hover:shadow-md active:scale-[0.99] transition-all flex gap-4 ${
                 notice.is_pinned ? "border-slate-300 ring-1 ring-slate-100" : "border-gray-100"}`}
         >
             {/* 左 */}

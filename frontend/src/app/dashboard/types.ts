@@ -40,3 +40,17 @@ export type Guide = {
     body_jp: string;
     image: string | null;
 };
+
+export type Event = {
+    id: number;
+    title_en: string;
+    title_jp: string;
+    description_en: string;
+    description_jp: string;
+    location: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+    cover_image: string | null;
+    is_joined: boolean;
+}
