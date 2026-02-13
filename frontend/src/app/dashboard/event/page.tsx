@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Event, Participant } from "../types";
 import { MOCK_EVENTS, MOCK_PARTICIPANTS } from "../../../constants/MockData";
 import { DayPicker } from 'react-day-picker';
@@ -9,6 +9,11 @@ import { format } from 'date-fns';
 import Header from "../components/Header";
 import TabButton from "../components/TabButton";
 import ModalBase from "../components/ModalBase";
+
+import Cookies from 'js-cookie';
+// import { cookies } from 'next/headers';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const ParticipantList = ({ participants }: { participants: Participant[] }) => {
     // コピーした瞬間に「Copied!」と出すためのstate
@@ -81,12 +86,47 @@ const EventDetailModal = ({event, onClose}: {event: Event, onClose: () => void})
     const isAdmin = true;
     const [isJoined, setIsJoined] = useState(event.is_joined);
     const [isAgreed, setIsagreed] = useState(false);
+    const [eventParticipants, setEventParticipants] = useState<Participant[]>([]);
+    const [error, setError] = useState<string | null>(null);
     const handleJoinToggle = () => {
         setIsJoined(!isJoined);
         if (isJoined) {
             setIsagreed(false);
         }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = Cookies.get('accessToken');
+                // console.log("アクセスURL: ", `${BACKEND_URL}/api/events/${event.id}/participants/`);
+                const participantsRes = await fetch(`${BACKEND_URL}/api/events/${event.id}/participants/`,{
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? {'Authorization': `Bearer ${token}`,} : {})
+                    }
+                });
+                if(!participantsRes.ok) {
+                    throw new Error (`参加者取得エラー${participantsRes.status}`);
+                }
+                const participantsData = await participantsRes.json();
+                setEventParticipants(participantsData.results);
+            }catch(err) {
+                console.error(err);
+                setError("データの読み込みに失敗しました。時間を空けて再度お試しください。")
+            }
+        };
+        fetchData();
+    },[])
+
+    if(error){
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 text-red-500 px-4 text-center">
+                <p>{error}</p>
+            </div>
+        );
+    }
 
     return (
         <ModalBase onClose={onClose} maxWidth="max-w-md" >
@@ -131,7 +171,7 @@ const EventDetailModal = ({event, onClose}: {event: Event, onClose: () => void})
                     {event.description_jp}
                 </div>
                 {isAdmin && (
-                    <ParticipantList participants={MOCK_PARTICIPANTS} />
+                    <ParticipantList participants={eventParticipants} />
                 )}
             </div>
             <div className="sticky bottom-0 bg-white border-t border-gray-50 p-4 pb-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
@@ -311,25 +351,52 @@ const EventPage = () => {
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
     
     // 通信用
-    const [events, setEvents] =useState<Event[]>([]);
+    const [events, setEvents] = useState<Event[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] =useState<string | null>(null);
 
-    // if(isLoading) {
-    //     return (
-    //         <div className="min-h-screen flex items-center justify-center bg-gray-50">
-    //             <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full "></div>
-    //         </div>
-    //     );
-    // }
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+                const token = Cookies.get('accessToken');
+                const eventRes = await fetch(`${BACKEND_URL}/api/events/`,{
+                    method: 'GET',
+                    headers: {
+                        'content-Type': 'application/json',
+                        ...(token ? {'Authorization': `Bearer ${token}`} : {})
+                    }
+                });
+                if(!eventRes.ok){
+                    throw new Error (`イベント取得エラー${eventRes.status}`);
+                }
+                const eventData = await eventRes.json();
+                setEvents(eventData.results);
+            }catch(err) {
+                console.error(err);
+                setError("データの読み込みに失敗しました。時間を空けて再度お試しください。")
+            }finally {
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    },[])
 
-    // if(error){
-    //     return (
-    //         <div className="min-h-screen flex items-center justify-center bg-gray-50 text-red-500 px-4 text-center">
-    //             <p>{error}</p>
-    //         </div>
-    //     );
-    // }
+    if(isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full "></div>
+            </div>
+        );
+    }
+
+    if(error){
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 text-red-500 px-4 text-center">
+                <p>{error}</p>
+            </div>
+        );
+    }
 
 
     return (
@@ -354,15 +421,15 @@ const EventPage = () => {
                     (viewMode === "calendar") 
                     ? (
                         <div className="flex flex-col gap-6">
-                            <EventCalendar selectedDate={selectedDate} onSelectedDate={(date) => setSelectedDate(date)} events={MOCK_EVENTS} />
-                            <DailyEventList date={selectedDate} events={MOCK_EVENTS} onOpenModal={(event) => setSelectedEvent(event)} />
+                            <EventCalendar selectedDate={selectedDate} onSelectedDate={(date) => setSelectedDate(date)} events={events} />
+                            <DailyEventList date={selectedDate} events={events} onOpenModal={(event) => setSelectedEvent(event)} />
                         </div>
                     )
-                    : <EventList events={MOCK_EVENTS} onOpenModal={(event) => setSelectedEvent(event)} />
+                    : <EventList events={events} onOpenModal={(event) => setSelectedEvent(event)} />
                 }
             </div>
             {selectedEvent && (
-                <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+                <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)}/>
             )}
         </div>
     )
