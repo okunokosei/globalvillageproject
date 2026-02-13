@@ -54,3 +54,9 @@ export type Event = {
     cover_image: string | null;
     is_joined: boolean;
 }
+
+export type Participant = {
+    id: number;
+    name: string;
+    room_number: string;
+};
