@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import health_check
+from .views import UserProfileView, DeactivateAccountView
 
 urlpatterns = [
-    path('health/', health_check, name='health_check'),
+    path('me/', UserProfileView.as_view(), name='user_profile'),
+    path('me/deactivate/', DeactivateAccountView.as_view(), name='user_deactivate'),
 ]
