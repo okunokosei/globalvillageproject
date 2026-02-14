@@ -139,7 +139,7 @@ const CreateGuideModal = ({onClose}: {onClose: () => void}) => {
                 )}
                 <form onSubmit={handleCreateNotice} className="flex flex-col gap-4">
                     <div>
-                        <label className="block text-sm font-medium mb-2">タグを選択</label>
+                        <label className="block text-sm font-medium mb-2">カテゴリーを選択</label>
                         {guideCategory.map((category) => (
                             <button
                                 key={category.id}
