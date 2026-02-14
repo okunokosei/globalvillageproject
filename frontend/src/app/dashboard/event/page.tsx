@@ -82,17 +82,47 @@ const ParticipantList = ({ participants }: { participants: Participant[] }) => {
     );
 };
 
-const EventDetailModal = ({event, onClose}: {event: Event, onClose: () => void}) => {
+const EventDetailModal = ({event, onClose, onUpdate}: {event: Event, onClose: () => void, onUpdate: () => void}) => {
     const isAdmin = true;
     const [isJoined, setIsJoined] = useState(event.is_joined);
     const [isAgreed, setIsagreed] = useState(false);
+
+    const [isStatusChanged, setIsStatusChanged] = useState(false);
+
     const [eventParticipants, setEventParticipants] = useState<Participant[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const handleJoinToggle = () => {
-        setIsJoined(!isJoined);
-        if (isJoined) {
-            setIsagreed(false);
+    const handleJoinToggle = async () => {
+        try {
+            const token = Cookies.get('accessToken');
+            const res = await fetch (`${BACKEND_URL}/api/events/${event.id}/join/`, {
+                method: 'POST',
+                headers: {
+                    'content-Type': 'application/json',
+                    ...(token ? {'Authorization': `Bearer ${token}`,} : {})
+                }
+            });
+            if(!res.ok) {
+                throw new Error (`エラーが発生しました。: ${res.status}`);
+            }
+            if(res.status === 201) {
+                setIsJoined(true);
+                setIsagreed(false);
+                setIsStatusChanged(true);
+            } else if(res.status === 200) {
+                setIsJoined(false);
+                setIsStatusChanged(true);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('通信に失敗しました。');
         }
+    };
+
+    const handleCloseModal = () => {
+        if(isStatusChanged) {
+            onUpdate();
+        }
+        onClose();
     };
 
     useEffect(() => {
@@ -117,7 +147,9 @@ const EventDetailModal = ({event, onClose}: {event: Event, onClose: () => void})
                 setError("データの読み込みに失敗しました。時間を空けて再度お試しください。")
             }
         };
-        fetchData();
+        if(isAdmin) {
+            fetchData();
+        }
     },[])
 
     if(error){
@@ -129,7 +161,7 @@ const EventDetailModal = ({event, onClose}: {event: Event, onClose: () => void})
     }
 
     return (
-        <ModalBase onClose={onClose} maxWidth="max-w-md" >
+        <ModalBase onClose={handleCloseModal} maxWidth="max-w-md" >
             {event.cover_image ? (
                 <div className="w-full h-56 bg-gray-100 relative group ">
                     <img src={event.cover_image} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
@@ -355,31 +387,32 @@ const EventPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] =useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setIsLoading(true);
-                const token = Cookies.get('accessToken');
-                const eventRes = await fetch(`${BACKEND_URL}/api/events/`,{
-                    method: 'GET',
-                    headers: {
-                        'content-Type': 'application/json',
-                        ...(token ? {'Authorization': `Bearer ${token}`} : {})
-                    }
-                });
-                if(!eventRes.ok){
-                    throw new Error (`イベント取得エラー${eventRes.status}`);
+    const fetchEvents = async () => {
+        try {
+            setIsLoading(true);
+            const token = Cookies.get('accessToken');
+            const eventRes = await fetch(`${BACKEND_URL}/api/events/`,{
+                method: 'GET',
+                headers: {
+                    'content-Type': 'application/json',
+                    ...(token ? {'Authorization': `Bearer ${token}`} : {})
                 }
-                const eventData = await eventRes.json();
-                setEvents(eventData.results);
-            }catch(err) {
-                console.error(err);
-                setError("データの読み込みに失敗しました。時間を空けて再度お試しください。")
-            }finally {
-                setIsLoading(false);
+            });
+            if(!eventRes.ok){
+                throw new Error (`イベント取得エラー${eventRes.status}`);
             }
-        };
-        fetchData();
+            const eventData = await eventRes.json();
+            setEvents(eventData.results);
+        }catch(err) {
+            console.error(err);
+            setError("データの読み込みに失敗しました。時間を空けて再度お試しください。")
+        }finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchEvents();
     },[])
 
     if(isLoading) {
@@ -429,7 +462,7 @@ const EventPage = () => {
                 }
             </div>
             {selectedEvent && (
-                <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)}/>
+                <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} onUpdate={fetchEvents}/>
             )}
         </div>
     )
