@@ -4,7 +4,7 @@ import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useState } from "react";
 import { UserProfileType } from "../types";
-import { MOCK_USER } from "../../../constants/MockData";
+import { MOCK_USER, MOCK_MY_JOINED_EVENTS } from "../../../constants/MockData";
 import Header from "../components/Header";
 
 const UserProfile = ({ userProfile, userLanguage, changeLanguage }: { userProfile: UserProfileType, userLanguage: "En"|"Jp", changeLanguage: (lang: "En"|"Jp") => void}) => {
@@ -62,6 +62,8 @@ const ProfilePage = () => {
     const [language, setLanguage] = useState<"En" | "Jp">("En");
 
     const router = useRouter();
+
+    
 
 
     const handleLogout = () => {
