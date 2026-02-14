@@ -60,3 +60,14 @@ export type Participant = {
     name: string;
     room_number: string;
 };
+
+export type UserProfileType = {
+    id: string; 
+    email: string;
+    name: string;
+    room_number: string;
+    language_preference: 'JP' | 'EN'; 
+    move_in_date: string; 
+    move_out_date: string; 
+    icon: string | null; 
+};
