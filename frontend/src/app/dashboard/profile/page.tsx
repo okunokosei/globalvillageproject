@@ -7,77 +7,9 @@ import { UserProfileType, Event } from "../types";
 import { MOCK_USER, MOCK_MY_JOINED_EVENTS } from "../../../constants/MockData";
 import Header from "../components/Header";
 import EventDetailModal from "../components/events/EventDetailModal";
-
-const UserProfile = ({ userProfile, userLanguage, changeLanguage }: { userProfile: UserProfileType, userLanguage: "En"|"Jp", changeLanguage: (lang: "En"|"Jp") => void}) => {
-    const formatYearMonth = (datesString: string) => {
-        const parts = datesString.split('-');
-        return `${parts[0]}.${parts[1]}`;
-    };
-    
-    return (
-        <div className="m-2 p-2 bg-white rounded-lg shadow-lg">
-            <div className="flex gap-4">
-                <img
-                    src={userProfile.icon ?? ""}
-                    alt=""
-                    className="h-28 w-28 p-2"
-                />
-                <div className="flex flex-col gap-1 mt-2">
-                    <p className="mb-1 text-xl font-bold">{userProfile.name}</p>
-                    <p className="text-gray-600">{`Room: ${userProfile.room_number}`}</p>
-                    <p className="text-gray-600">{`${formatYearMonth(userProfile.move_in_date)} - ${formatYearMonth(userProfile.move_out_date)}`}</p>
-                </div>
-            </div>
-            <div className="flex gap-2 p-2 m-2">
-                <button
-                    onClick={() => changeLanguage("En")}
-                    className={`p-1 text-sm border border-gray-400 w-full rounded-full ${(userLanguage === "En") ? "bg-blue-600 text-white" : ""}`}
-                >
-                    English
-                </button>
-                <button
-                    onClick={() => changeLanguage("Jp")}
-                    className={`p-1 text-sm border border-gray-400 w-full rounded-full ${(userLanguage === "Jp") ? "bg-blue-600 text-white" : ""}`}
-                >
-                    日本語
-                </button>
-            </div>
-        </div>
-    );
-};
-
-const EventHistoryCard = ({event, onClick}: {event: Event, onClick: () => void}) => {
-    return (
-        <div>
-            <button
-                onClick={onClick}
-                className="text-sm flex gap-2 "
-            >
-                <p>{event.date}</p>
-                <p>{event.title_jp}</p>
-            </button>
-        </div>
-    )
-}
-
-const EventHistory = ({events, onOpenModal}: {events: Event[], onOpenModal: (e: Event) => void}) => {
-    return (
-        <div className="flex flex-col gap-2 ">
-            {events.length > 0 ? (
-                events.map((event) => (
-                    <EventHistoryCard 
-                        key={event.id}
-                        event={event}
-                        onClick={() => onOpenModal(event)}
-                    />
-                ))
-            ) : (
-                <p className="text-gray-400 text-sm py-4 text-center">No events found.</p>
-            )
-            }
-        </div>
-    );
-};
+import UserProfile from "../components/profile.tsx/UserProfile";
+import EventHistoryCard from "../components/profile.tsx/EventHistoryCard";
+import EventHistory from "../components/profile.tsx/EventHistory";
 
 const ProfilePage = () => {
     const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
