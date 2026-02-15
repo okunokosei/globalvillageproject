@@ -11,6 +11,75 @@ import UserProfile from "../components/profile.tsx/UserProfile";
 import EventHistoryCard from "../components/profile.tsx/EventHistoryCard";
 import EventHistory from "../components/profile.tsx/EventHistory";
 
+const MenuButton = ({icon, label, onClick, isDanger}: any) => {
+    return (
+        <button
+            onClick={onClick}
+            className={`w-full flex items-center justify-between p-4 bg-white border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors active:bg-gray-100
+                ${isDanger ? 'text-red-500' : 'text-gray-700'}
+                `}
+        >
+            <div className="flex items-center gap-3">
+                <span className="text-xl">{icon}</span>
+                <span className="font-medium text-sm">{label}</span>
+            </div>
+            <svg className="w-5 h-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    )
+};
+
+type Props ={
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    title: string;
+    message: string;
+    confirmText?: string;
+    cancelText?: string;
+    isDanger?: boolean;
+};
+const ConfirmModal =({
+    isOpen, onClose, onConfirm, title, message,
+    confirmText = "OK", cancelText = "キャンセル", isDanger = false
+}: Props) => {
+    if(!isOpen) return null;
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 animate-in fade-in duration-200">
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose}></div>
+            <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform transition-all scale-100">
+                <h3 className={`text-lg font-bold mb-2 ${isDanger ? 'text-red-600' : 'text-gray-900'}`}>
+                    {title}
+                </h3>
+                <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+                    {message}
+                </p>
+                <div className="flex gap-3 justify-end">
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                        {cancelText}
+                    </button>
+                    <button
+                        onClick={onConfirm}
+                        className={`px-4 py-2 text-sm font-bold text-white rounded-lg shadow-sm transition-transform active:scale-95
+                            ${isDanger
+                                ? 'bg-red-500 hover:bg-red-600'
+                                : 'bg-blue-600 hover:bg-blue-700'
+                            }`}
+                    >
+                        {confirmText}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+
 const ProfilePage = () => {
     const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
     const [myEvents, setMyEvents] = useState<Event[]>([])
@@ -28,11 +97,13 @@ const ProfilePage = () => {
     const [selectedEvent, setSelectedEvent] = useState<Event|null>(null);
     const [activeTab, setActiveTab] = useState<"upcoming"|"past">("upcoming");
 
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
     const router = useRouter();
 
     const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
-
-
 
     const filterdEvents = () => {
         const getTodayString = () => {
@@ -221,22 +292,23 @@ const ProfilePage = () => {
                     )
                 }
             </div>
-            <div className="flex flex-col gap-2 bg-white m-2 p-2 rounded-lg shadow-lg">
-                <button className="border border-gray-600 text-gray-800 p-1 text-sm rounded-sm shadow">
-                    プロフィール編集
-                </button>
-                <button
-                    onClick={handleLogout}
-                    className="border border-gray-600 text-gray-800 p-1 text-sm rounded-sm shadow"
-                >
-                    ログアウト
-                </button>
-                <button
-                    onClick={deactivateUser}
-                    className="border border-gray-600 text-gray-800 p-1 text-sm rounded-sm shadow"
-                >
-                    アカウント削除
-                </button>
+            <div className="m-2 rounded overflow-hidden shadow-sm border border-gray-100 rounded-lg shadow-lg">
+                <MenuButton
+                    icon="✏️"
+                    label="Edit Profile"
+                    onClick={() => setIsEditOpen(true)}
+                />
+                <MenuButton
+                    icon="🚪"
+                    label="Log out"
+                    onClick={() => setIsLogoutOpen(true)}
+                />
+                <MenuButton
+                    icon="🗑️"
+                    label="Delete Account"
+                    onClick={() => setIsDeleteOpen(true)}
+                    isDanger={true}
+                />
                 {deactivateError && (
                     <div className="text-red-600 text-xs text-center mt-1 p-2 bg-red-50 border border-red-100 rounded">
                         ⚠️ {deactivateError}
@@ -246,6 +318,24 @@ const ProfilePage = () => {
             {selectedEvent && (
                 <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} readOnly={true} />
             )}
+            <ConfirmModal 
+                isOpen={isLogoutOpen}
+                onClose={() => setIsLogoutOpen(false)}
+                onConfirm={handleLogout}
+                title="Log out"
+                message="Are you sure you want to log out ?"
+                confirmText="Log out"
+                isDanger={false}
+            />
+            <ConfirmModal 
+                isOpen={isDeleteOpen}
+                onClose={() => setIsDeleteOpen(false)}
+                onConfirm={deactivateUser}
+                title="Delete Account"
+                message="Are you sure? This action cannot be undone and all your data will be permanently removed."
+                confirmText="Delete Account"
+                isDanger={true}
+            />
         </div>
     )
 };
