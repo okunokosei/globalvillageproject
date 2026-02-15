@@ -2,7 +2,7 @@
 
 import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserProfileType, Event } from "../types";
 import { MOCK_USER, MOCK_MY_JOINED_EVENTS } from "../../../constants/MockData";
 import Header from "../components/Header";
@@ -81,9 +81,15 @@ const EventHistory = ({events, onOpenModal}: {events: Event[], onOpenModal: (e: 
 
 const ProfilePage = () => {
     const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
+    const [myEvents, setMyEvents] = useState<Event[]>([])
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [isProfileLoading, setIsProfileLoading] = useState(true);
+    const [profileGetError, setProfileGetError] = useState<string | null>(null);
+    const [isEventLoading, setIsEventLoading] = useState(true);
+    const [MyEventError, setMyEventError] = useState<string | null>(null);
+    const [isDeactivateLoading, setIsDeactivateLoading] = useState(false);
+    const [deactivateError, setDeactivateError] = useState<string|null>(null);
+    const [deactivateSuccessMsg, setdeactivateSuccessMsg] =useState<string|null>(null);
 
     const [language, setLanguage] = useState<"En" | "Jp">("En");
 
@@ -92,20 +98,23 @@ const ProfilePage = () => {
 
     const router = useRouter();
 
-    const getTodayString = () => {
-        const d = new Date();
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-    const todayStr = getTodayString();
-    const futureEvents = MOCK_MY_JOINED_EVENTS.filter(event => event.date >= todayStr);
-    const pastEvents = MOCK_MY_JOINED_EVENTS.filter(event => event.date < todayStr);
-    futureEvents.sort((a,b) => a.date.localeCompare(b.date));
-    pastEvents.sort((a,b) => b.date.localeCompare(a.date));
+    const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+
+
 
     const filterdEvents = () => {
+        const getTodayString = () => {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+        const todayStr = getTodayString();
+        const futureEvents = myEvents.filter(event => event.date >= todayStr);
+        const pastEvents = myEvents.filter(event => event.date < todayStr);
+        futureEvents.sort((a,b) => a.date.localeCompare(b.date));
+        pastEvents.sort((a,b) => b.date.localeCompare(a.date));
         return activeTab === 'upcoming' ? futureEvents : pastEvents
     };
 
@@ -116,13 +125,127 @@ const ProfilePage = () => {
         router.push('/login');
     };
 
+    const fetchUser = async () => {
+        try {
+            setIsProfileLoading(true);
+            const token = Cookies.get('accessToken');
+            const userRes = await fetch(`${BACKEND_URL}/api/accounts/me/`,{
+                method: 'GET',
+                headers: {
+                    'content-Type': 'application/json',
+                    ...(token ? {'Authorization': `Bearer ${token}`} : {})
+                }
+            });
+            if(!userRes.ok){
+                throw new Error (`ユーザー情報取得エラー${userRes.status}`);
+            }
+            const userData = await userRes.json();
+            setUserProfile(userData);
+        }catch(err) {
+            console.error(err);
+            setProfileGetError("ユーザーデータの読み込みに失敗しました。時間を空けて再度お試しください。")
+        }finally {
+            setIsProfileLoading(false);
+        }
+    };
+
+    const fetchMyEvents = async () => {
+        try {
+            setIsEventLoading(true);
+            const token = Cookies.get('accessToken');
+            const MyEventsRes = await fetch(`${BACKEND_URL}/api/events/my-joined/`,{
+                method: 'GET',
+                headers: {
+                    'content-Type': 'application/json',
+                    ...(token ? {'Authorization': `Bearer ${token}`} : {})
+                }
+            });
+            if(!MyEventsRes.ok){
+                throw new Error (`イベント情報取得エラー${MyEventsRes.status}`)
+            }
+            const MyEventsData = await MyEventsRes.json();
+            setMyEvents(MyEventsData.results);
+        }catch(err){
+            console.error(err);
+            setMyEventError("イベント情報の取得に失敗しました。時間を空けて再度お試しください。")
+        }finally{
+            setIsEventLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUser();
+        fetchMyEvents();
+    },[])
+
+    const deactivateUser = async () => {
+        try {
+            setIsDeactivateLoading(true);
+            const token = Cookies.get('accessToken');
+            const deactivateRes = await fetch(`${BACKEND_URL}/api/accounts/me/deactivate/`,{
+                method: 'DELETE',
+                headers: {
+                    'content-Type': 'application/json',
+                    ...(token ? {'Authorization': `Bearer ${token}`} : {})
+                }
+            });
+            if(!deactivateRes.ok){
+                throw new Error (`退会エラー${deactivateRes.status}`);
+            }
+            setdeactivateSuccessMsg("退会に成功しました。");
+            Cookies.remove('accessToken');
+            Cookies.remove('refreshToken');
+            setTimeout(() => {
+                router.push('/');
+                router.refresh();
+            }, 2000);
+        }catch(err){
+            console.error(err);
+            setDeactivateError("退会に失敗しました。")
+        }finally{
+            setIsDeactivateLoading(false);
+        }
+    };
+
+    if(isDeactivateLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full "></div>
+            </div>
+        );
+    }
+    if(deactivateSuccessMsg){
+        return(
+            <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in duration-300">
+                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 text-3xl">
+                    ✓
+                </div>
+                <h2 className="text-2xl font-blod text-gray-800 mb-2">Success!</h2>
+                <p className="text-gray-600 font-medium">{deactivateSuccessMsg}</p>
+                <p className="text-sm text-gray-400 mt-4">ログイン画面に戻ります...</p>
+            </div>
+        );
+    }
+
+
 
     return (
         <div>
             <Header title="Profile" subtitle="ユーザー情報" />
-            <div>
-                <UserProfile userProfile={MOCK_USER} userLanguage={language} changeLanguage={setLanguage} />
-            </div>
+            {isProfileLoading
+                ? (
+                    <div className="m-2 p-10 bg-white rounded-lg shadow-lg flex justify-center">
+                        <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+                    </div>
+                ) : (
+                    <div>
+                        {userProfile
+                            ? <UserProfile userProfile={userProfile} userLanguage={language} changeLanguage={setLanguage} />
+                            : <p className="text-red-600 m-2 p-2 bg-white rounded-lg shadow-lg">{profileGetError}</p>
+                        }
+                    </div>
+                )
+            }
             <div className="m-2 p-4 bg-white rounded-lg shadow-lg">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold text-gray-800">
@@ -151,7 +274,20 @@ const ProfilePage = () => {
                         </button>
                     </div>
                 </div>
-                <EventHistory events={filterdEvents()} onOpenModal={(event) => setSelectedEvent(event)} />
+                {isEventLoading
+                    ? (
+                        <div className="m-2 p-10 bg-white rounded-lg  flex justify-center">
+                            <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+                        </div>
+                    ) : (
+                        <div>
+                            {(!MyEventError)
+                                ? <EventHistory events={filterdEvents()} onOpenModal={(event) => setSelectedEvent(event)} />
+                                : <p className="text-red-600 m-2 p-2 bg-white rounded-lg shadow-lg">{MyEventError}</p>
+                            }
+                        </div>
+                    )
+                }
             </div>
             <div className="flex flex-col gap-2 bg-white m-2 p-2 rounded-lg shadow-lg">
                 <button className="border border-gray-600 text-gray-800 p-1 text-sm rounded-sm shadow">
@@ -163,9 +299,17 @@ const ProfilePage = () => {
                 >
                     ログアウト
                 </button>
-                <button className="border border-gray-600 text-gray-800 p-1 text-sm rounded-sm shadow">
+                <button
+                    onClick={deactivateUser}
+                    className="border border-gray-600 text-gray-800 p-1 text-sm rounded-sm shadow"
+                >
                     アカウント削除
                 </button>
+                {deactivateError && (
+                    <div className="text-red-600 text-xs text-center mt-1 p-2 bg-red-50 border border-red-100 rounded">
+                        ⚠️ {deactivateError}
+                    </div>
+                )}
             </div>
             {selectedEvent && (
                 <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} readOnly={true} />
@@ -174,4 +318,4 @@ const ProfilePage = () => {
     )
 };
 
-export default ProfilePage
+export default ProfilePage;

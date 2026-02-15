@@ -13,7 +13,8 @@ class DeactivateAccountView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def delete(self, request):
         user = request.user
-        user.is_active = False
-        user.save()
+        # user.is_active = False
+        # user.save()
+        user.delete()
         return Response({"detail": "アカウントを削除しました。"}, status=status.HTTP_204_NO_CONTENT)
 
