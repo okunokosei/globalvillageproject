@@ -1,5 +1,5 @@
 import { Event } from "../../types";
-import EventHistoryCard from "../profile.tsx/EventHistoryCard";
+import EventHistoryCard from "../profile/EventHistoryCard";
 
 const EventHistory = ({events, onOpenModal}: {events: Event[], onOpenModal: (e: Event) => void}) => {
     return (

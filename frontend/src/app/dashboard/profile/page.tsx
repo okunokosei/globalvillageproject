@@ -7,9 +7,10 @@ import { UserProfileType, Event } from "../types";
 import { MOCK_USER, MOCK_MY_JOINED_EVENTS } from "../../../constants/MockData";
 import Header from "../components/Header";
 import EventDetailModal from "../components/events/EventDetailModal";
-import UserProfile from "../components/profile.tsx/UserProfile";
-import EventHistoryCard from "../components/profile.tsx/EventHistoryCard";
-import EventHistory from "../components/profile.tsx/EventHistory";
+import UserProfile from "../components/profile/UserProfile";
+import EventHistoryCard from "../components/profile/EventHistoryCard";
+import EventHistory from "../components/profile/EventHistory";
+import EditProfileModal from "../components/profile/EditProfileModal";
 
 const MenuButton = ({icon, label, onClick, isDanger}: any) => {
     return (
@@ -230,8 +231,6 @@ const ProfilePage = () => {
         );
     }
 
-
-
     return (
         <div>
             <Header title="Profile" subtitle="ユーザー情報" />
@@ -317,6 +316,15 @@ const ProfilePage = () => {
             </div>
             {selectedEvent && (
                 <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} readOnly={true} />
+            )}
+            {isEditOpen && userProfile && (
+                <EditProfileModal 
+                    user={userProfile}
+                    onClose={() => setIsEditOpen(false)}
+                    onUpdate={() => {
+                        fetchUser();
+                    }}
+                />
             )}
             <ConfirmModal 
                 isOpen={isLogoutOpen}
