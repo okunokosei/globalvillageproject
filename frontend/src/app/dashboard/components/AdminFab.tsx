@@ -4,6 +4,7 @@ import { useState } from "react";
 import CreateNoticeModal from "./modals/CreateNoticeModal";
 import CreateGuideModal from "./modals/CreateGuideModal";
 import CreateEventModal from "./modals/CreateEventModal";
+import CreateGalleryModal from "./modals/CreateGalleryModal";
 
 const NewPostButton = ({object, onClick}: {object: string, onClick: () => void}) => {
     return (
@@ -51,6 +52,9 @@ const AdminFab = () => {
             )}
             {(ActiveModal === "event") && (
                 <CreateEventModal onClose={() => setActiveModal(null)}/>
+            )}
+            {(ActiveModal === "album") && (
+                <CreateGalleryModal onClose={() => setActiveModal(null)}/>
             )}
         </div>
     )

@@ -142,7 +142,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
                             type="text"
                             value={location}
                             onChange={(e) => setLocation(e.target.value)}
-                            className="border p-2 w-fullrounded"
+                            className="border p-2 w-full rounded"
                             placeholder="場所"
                         />
                     </div>
@@ -152,7 +152,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="border p-2 w-fullrounded"
+                            className="border p-2 w-full rounded"
                         />
                     </div>
                     <div>
@@ -161,7 +161,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
                             type="time"
                             value={startTime}
                             onChange={(e) => setStartTime(e.target.value)}
-                            className="border p-2 w-fullrounded"
+                            className="border p-2 w-full rounded"
                         />
                     </div>
                     <div>
@@ -170,7 +170,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
                             type="time"
                             value={endTime}
                             onChange={(e) => setEndTime(e.target.value)}
-                            className="border p-2 w-fullrounded"
+                            className="border p-2 w-full rounded"
                         />
                     </div>
                     <div>
