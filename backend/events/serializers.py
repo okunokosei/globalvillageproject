@@ -6,6 +6,7 @@ class EventSerializer(serializers.ModelSerializer):
     start_time = serializers.TimeField(format="%H:%M")
     end_time = serializers.TimeField(format="%H:%M")
     is_joined = serializers.SerializerMethodField()
+    # SerializerMethodField は read_only_fields である。
     class Meta:
         model = Events
         fields = [
