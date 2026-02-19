@@ -71,3 +71,14 @@ export type UserProfileType = {
     move_out_date: string; 
     icon: string | null; 
 };
+
+export type GalleryType = {
+    id: number;
+    title_en: string;
+    title_jp: string;
+    event_date: string;
+    cover_image_url: string;
+    google_photos_url: string;
+    created_at: string;
+    created_by: string | null;
+};
