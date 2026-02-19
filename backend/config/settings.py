@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'contents.apps.ContentsConfig',
     'events.apps.EventsConfig',
+    'gallery.apps.GalleryConfig',
 
     'storages',
 ]

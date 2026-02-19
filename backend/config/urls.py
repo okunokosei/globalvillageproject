@@ -8,4 +8,5 @@ urlpatterns = [
     path('api/auth/', include('djoser.urls.jwt')),
     path('api/', include('contents.urls')),
     path('api/events/', include('events.urls')),
+    path('api/gallery/', include('gallery.urls')),
 ]
