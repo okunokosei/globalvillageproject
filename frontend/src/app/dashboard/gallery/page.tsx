@@ -87,13 +87,61 @@ const ConfirmOpenModal = ({ gallery, onClose}: {gallery: GalleryType, onClose: (
 const GalleryPage = () => {
     const [selectedGallery, setSelectedGallery] = useState<GalleryType|null>(null);
 
+    const [galleries, setGalleries] = useState<GalleryType[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string|null>(null);
+
+    const fetchGalleries = async () => {
+        try {
+            setIsLoading(true);
+            const token = Cookies.get('accessToken');
+            const galleryRes = await fetch(`${BACKEND_URL}/api/gallery/`,{
+                method: 'GET',
+                headers: {
+                    'content-Type': 'application/json',
+                    ...(token ? {'Authorization': `Bearer ${token}`} : {})
+                }
+            });
+            if(!galleryRes.ok){
+                throw new Error (`アルバム取得エラー${galleryRes.status}`);
+            }
+            const galleryData = await galleryRes.json();
+            setGalleries(galleryData.results);
+        }catch(err) {
+            console.error(err);
+            setError("データの読み込みに失敗しました。時間を空けて再度お試しください。")
+        }finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchGalleries();
+    },[])
+
+    if(isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full "></div>
+            </div>
+        );
+    }
+
+    if(error){
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 text-red-500 px-4 text-center">
+                <p>{error}</p>
+            </div>
+        );
+    }
+
     return (
         <div>
             <Header title="Album" subtitle="イベント写真" />
 
             <div className="p-4">
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                    {MOCK_GALLERIES.map((gallery) => (
+                    {galleries.map((gallery) => (
                         <GalleryItem 
                             key={gallery.id}
                             gallery={gallery}
