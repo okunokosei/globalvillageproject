@@ -2,14 +2,11 @@
 
 import { useState, useEffect } from "react";
 
-import { NoticeTag, Notice, GuideCategory, Guide } from "./types";
+import { Notice, GuideCategory } from "./types";
 
 import Header from "./components/Header";
-import TabButton from "./components/TabButton";
 import NewsCard from "./components/NewsCard";
 import NewsDetailModal from "./components/NewsModal";
-import GuideDetailModal from "./components/GuideModal";
-import GuideCategoryItem from "./components/GuideItem";
 
 import Cookies from 'js-cookie';
 
@@ -98,13 +95,9 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 
 const HomePage = () => {
-    const [currentView, setCurrentView] = useState<"news" | "guide">("news");
     const [selectedNotice, setSelectedNotice] = useState<any | null>(null);
-    const [selectedGuide, setSelectedGuide] = useState<any | null>(null);
-    const [openCategoryId, setOpenCategoryId] = useState<number | null>(null);
 
     const [notices, setNotices] = useState<Notice[]>([]);
-    const [guideCategories, setGuideCategories] = useState<GuideCategory[]>([])
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -114,7 +107,6 @@ const HomePage = () => {
             try {
                 setIsLoading(true);
                 const token = Cookies.get('accessToken');
-                // console.log("現在のトークン:", token);
 
                 const noticesRes = await fetch(`${BACKEND_URL}/api/notices/`,{
                     method: 'GET',
@@ -129,21 +121,7 @@ const HomePage = () => {
                 }
                 const noticesData = await noticesRes.json();
 
-                const guideCategoriesRes = await fetch(`${BACKEND_URL}/api/guide-page/`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...(token ? {'Authorization': `Bearer ${token}`,} : {})
-                    }
-                });
-                if(!guideCategoriesRes.ok){
-                    throw new Error (`ガイド取得エラー${guideCategoriesRes.status}`);
-                }
-                const guideCategoriesResData = await guideCategoriesRes.json();
-
-                // console.log("取得ニュースデータ:",noticesData);
                 setNotices(noticesData.results);
-                setGuideCategories(guideCategoriesResData.results);
 
             }catch (err) {
                 console.error(err);
@@ -155,10 +133,6 @@ const HomePage = () => {
         fetchData();
     }, [])
 
-    const closeModal= () => {
-        setSelectedNotice(null);
-        setSelectedGuide(null);
-    };
 
     if(isLoading) {
         return (
@@ -176,59 +150,20 @@ const HomePage = () => {
         );
     }
 
-    const newsContent = (
-        <div className="space-y-3 pt-4 pb-24">
-            {
-                notices.map((notice) => (
-                    <NewsCard key={notice.id} notice={notice} onClick={() => setSelectedNotice(notice)} />
-                ))
-            }
-        </div>
-    );
-
-    const guideContent = (
-        <div className="pt-4 pb-24">
-            {
-                guideCategories.map((category) => (
-                    <GuideCategoryItem 
-                        key={category.id}
-                        category={category}
-                        isOpen={openCategoryId === category.id}
-                        onToggle={() => setOpenCategoryId(openCategoryId === category.id ? null : category.id)}
-                        onGuideClick={(guide) => setSelectedGuide(guide)}
-                    />
-                ))
-            }
-        </div>
-    );
-
     return (
         <div className="min-h-screen bg-gray-50">
             <Header title="Home" subtitle="お知らせと生活ガイド" />
-            <div className="sticky top-[57px] z-40 bg-gray-50 pt-2 px-2 pb-2">
-                <div className="flex bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
-                    <TabButton 
-                        label="News"
-                        isActive={currentView === "news"}
-                        onClick={() => setCurrentView("news")}
-                    />
-                    <TabButton 
-                        label="Guide"
-                        isActive={currentView === "guide"}
-                        onClick={() => setCurrentView("guide")}
-                    />
-                </div>
-            </div>
-            <div className="px-4">
-                {currentView === "news" ? newsContent : guideContent}
+            <div className="space-y-3 pt-4 pb-24 px-4">
+                {
+                    notices.map((notice) => (
+                        <NewsCard key={notice.id} notice={notice} onClick={() => setSelectedNotice(notice)} />
+                    ))
+                }
             </div>
 
             {/* 詳細 */}
             {selectedNotice && (
-                <NewsDetailModal notice={selectedNotice} onClose={closeModal} />
-            )}
-            {selectedGuide && (
-                <GuideDetailModal guide={selectedGuide} onClose={closeModal} />
+                <NewsDetailModal notice={selectedNotice} onClose={() => setSelectedNotice(null)} />
             )}
         </div>
     )

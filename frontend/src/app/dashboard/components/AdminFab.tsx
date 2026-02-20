@@ -2,7 +2,6 @@
 import { useState } from "react";
 
 import CreateNoticeModal from "./modals/CreateNoticeModal";
-import CreateGuideModal from "./modals/CreateGuideModal";
 import CreateEventModal from "./modals/CreateEventModal";
 import CreateGalleryModal from "./modals/CreateGalleryModal";
 
@@ -31,7 +30,6 @@ const AdminFab = () => {
                     isMenuOpen && (
                         <div className="flex flex-col gap-3 mb-2">
                             <NewPostButton object="New Notice" onClick={() => setActiveModal("notice")}/>
-                            <NewPostButton object="New Guide" onClick={() => setActiveModal("guide")}/>
                             <NewPostButton object="New Event" onClick={() => setActiveModal("event")}/>
                             <NewPostButton object="New Album" onClick={() => setActiveModal("album")}/>
                         </div>
@@ -46,9 +44,6 @@ const AdminFab = () => {
             </div>
             {(ActiveModal === "notice") && (
                 <CreateNoticeModal onClose={() => setActiveModal(null)}/>
-            )}
-            {(ActiveModal === "guide") && (
-                <CreateGuideModal onClose={() => setActiveModal(null)}/>
             )}
             {(ActiveModal === "event") && (
                 <CreateEventModal onClose={() => setActiveModal(null)}/>
