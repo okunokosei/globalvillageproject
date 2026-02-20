@@ -1,7 +1,7 @@
 import { Event} from "../../types";
 import ModalBase from "../ModalBase";
 
-const EventDetailModal = ({event, onClose, readOnly}: {event: Event, onClose: () => void, readOnly: boolean}) => {
+const EventDetailModal = ({event, onClose}: {event: Event, onClose: () => void}) => {
 
     return (
         <ModalBase onClose={onClose} maxWidth="max-w-md" >
@@ -40,16 +40,26 @@ const EventDetailModal = ({event, onClose, readOnly}: {event: Event, onClose: ()
                     {event.description_jp}
                 </div>
             </div>
-            {!readOnly && (
+            { event.google_form_url && (
                 <div className="sticky bottom-0 bg-white border-t border-gray-50 p-4 pb-6 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
-                    <div className="flex flex-col gap-3">
-                        <button
-                            onClick={onClose}
-                            className="w-full py-3.5 rounded-xl font-bold text-white shadow-lg shadow-blue-200 transition-all duration-200
+                    <div className="flex flex-col gap-2 items-center">
+                        <p className="text-xs text-gray-500 text-center mb-1">
+                            参加登録は外部サイト（Google Forms）で行います
+                        </p>
+                        <a
+                            href={event.google_form_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-3.5 flex items-center justify-center gap-3 rounded-xl font-bold text-white shadow-lg shadow-blue-200 transition-all duration-200
                                         bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 hover:shadow-xl transform active:scale-[0.98]"
                         >
-                            JOIN Event
-                        </button>
+                            <span>Google Form で参加登録</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                        </a>
                     </div>
                 </div>
             )}

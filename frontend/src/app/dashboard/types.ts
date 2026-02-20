@@ -17,29 +17,6 @@ export type Notice = {
     created_at: string;
 };
 
-export type GuideCategory = {
-    id: number;
-    name_en: string;
-    name_jp: string;
-    icon_name: string;
-    guides: Guide[];
-};
-
-export type SimpleGuideCategory = {
-    id: number;
-    name_en: string;
-    name_jp: string;
-    icon_name: string;
-};
-
-export type Guide = {
-    id: number;
-    title_en: string;
-    title_jp: string;
-    body_en: string;
-    body_jp: string;
-    image: string | null;
-};
 
 export type Event = {
     id: number;
@@ -52,7 +29,8 @@ export type Event = {
     start_time: string;
     end_time: string;
     cover_image: string | null;
-    is_joined: boolean;
+    google_form_url: string | null;
+
 }
 
 

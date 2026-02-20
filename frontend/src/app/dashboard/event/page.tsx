@@ -101,7 +101,7 @@ const EventPage = () => {
                 }
             </div>
             {selectedEvent && (
-                <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} readOnly={false} />
+                <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
             )}
         </div>
     )

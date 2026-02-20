@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-import { Notice, GuideCategory } from "./types";
+import { Notice} from "./types";
 
 import Header from "./components/Header";
 import NewsCard from "./components/NewsCard";
@@ -47,48 +47,6 @@ const MOCK_NOTICES: Notice[] = [
   },
 ];
 
-const MOCK_GUIDE_DATA: GuideCategory[] = [
-  {
-    id: 1,
-    name_en: "Garbage Disposal",
-    name_jp: "ゴミ出しルール",
-    icon_name: "🗑️",
-    guides: [
-      {
-        id: 101,
-        title_en: "Burnable Trash",
-        title_jp: "可燃ごみの出し方",
-        body_en: "Tue & Fri",
-        body_jp: "収集日は火曜日と金曜日です。指定の袋に入れてください。",
-        image: null
-      },
-      {
-        id: 102,
-        title_en: "Recyclables",
-        title_jp: "資源ごみ（カン・ビン）",
-        body_en: "Wed only",
-        body_jp: "水曜日のみ回収します。中を洗って出してください。",
-        image: null
-      }
-    ]
-  },
-  {
-    id: 2,
-    name_en: "Common Areas",
-    name_jp: "共用部の利用",
-    icon_name: "🍳",
-    guides: [
-      {
-        id: 201,
-        title_en: "Kitchen Rules",
-        title_jp: "キッチンの利用ルール",
-        body_en: "Wash dishes.",
-        body_jp: "使用後はすぐに食器を洗い、生ごみは各自で処理してください。",
-        image: null
-      }
-    ]
-  },
-];
 // ----------------------------------------------------
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
