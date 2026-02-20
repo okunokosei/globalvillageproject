@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Event, Participant } from "../types";
+import { Event } from "../types";
 import { MOCK_EVENTS, MOCK_PARTICIPANTS } from "../../../constants/MockData";
 
 import { format } from 'date-fns';
@@ -101,7 +101,7 @@ const EventPage = () => {
                 }
             </div>
             {selectedEvent && (
-                <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} onUpdate={fetchEvents} readOnly={false} />
+                <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} readOnly={false} />
             )}
         </div>
     )
