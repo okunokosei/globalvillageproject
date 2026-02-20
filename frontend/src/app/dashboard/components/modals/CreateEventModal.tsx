@@ -22,6 +22,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [coverImage, setCoverImage] = useState<File | null>(null);
+    const [googleFormUrl, setGoogleFormUrl] = useState('');
 
     const isRequiredFieldsFilled = titleEn && titleJp && descriptionEn && descriptionJp && location && date && startTime && endTime;
 
@@ -43,6 +44,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
         if (coverImage){
             formData.append('cover_image', coverImage);
         }
+        formData.append('google_form_url', googleFormUrl);
 
         const token = Cookies.get('accessToken')
         try {
@@ -184,6 +186,16 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
                                 }
                             }}
                             className="border p-2 w-full rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium">Google Photos URL</label>
+                        <input 
+                            type="text"
+                            value={googleFormUrl}
+                            onChange={(e) => setGoogleFormUrl(e.target.value)}
+                            className="border p-2 w-full rounded"
+                            placeholder="Google Form のURLを入力"
                         />
                     </div>
                     <button
