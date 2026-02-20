@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('title_jp', models.CharField(max_length=200, verbose_name='日本語タイトル')),
                 ('body_en', models.TextField(verbose_name='英語本文')),
                 ('body_jp', models.TextField(verbose_name='日本語本文')),
-                ('image', models.ImageField(blank=True, null=True, upload_to=contents.models.guide_image_path, verbose_name='添付画像')),
+                ('image', models.ImageField(blank=True, null=True, upload_to='guides/', verbose_name='添付画像')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='作成日')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='更新日')),
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='guide', to='contents.guidecategories', verbose_name='ガイドカテゴリ')),
