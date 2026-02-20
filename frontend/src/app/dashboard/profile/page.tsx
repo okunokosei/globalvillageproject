@@ -3,13 +3,9 @@
 import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useState, useEffect } from "react";
-import { UserProfileType, Event } from "../types";
-import { MOCK_USER, MOCK_MY_JOINED_EVENTS } from "../../../constants/MockData";
+import { UserProfileType } from "../types";
 import Header from "../components/Header";
-import EventDetailModal from "../components/events/EventDetailModal";
 import UserProfile from "../components/profile/UserProfile";
-import EventHistoryCard from "../components/profile/EventHistoryCard";
-import EventHistory from "../components/profile/EventHistory";
 import EditProfileModal from "../components/profile/EditProfileModal";
 
 const MenuButton = ({icon, label, onClick, isDanger}: any) => {
@@ -83,20 +79,14 @@ const ConfirmModal =({
 
 const ProfilePage = () => {
     const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
-    const [myEvents, setMyEvents] = useState<Event[]>([])
 
     const [isProfileLoading, setIsProfileLoading] = useState(true);
     const [profileGetError, setProfileGetError] = useState<string | null>(null);
-    const [isEventLoading, setIsEventLoading] = useState(true);
-    const [MyEventError, setMyEventError] = useState<string | null>(null);
     const [isDeactivateLoading, setIsDeactivateLoading] = useState(false);
     const [deactivateError, setDeactivateError] = useState<string|null>(null);
     const [deactivateSuccessMsg, setdeactivateSuccessMsg] =useState<string|null>(null);
 
     const [language, setLanguage] = useState<"En" | "Jp">("En");
-
-    const [selectedEvent, setSelectedEvent] = useState<Event|null>(null);
-    const [activeTab, setActiveTab] = useState<"upcoming"|"past">("upcoming");
 
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isLogoutOpen, setIsLogoutOpen] = useState(false);
@@ -105,22 +95,6 @@ const ProfilePage = () => {
     const router = useRouter();
 
     const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
-
-    const filterdEvents = () => {
-        const getTodayString = () => {
-            const d = new Date();
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        };
-        const todayStr = getTodayString();
-        const futureEvents = myEvents.filter(event => event.date >= todayStr);
-        const pastEvents = myEvents.filter(event => event.date < todayStr);
-        futureEvents.sort((a,b) => a.date.localeCompare(b.date));
-        pastEvents.sort((a,b) => b.date.localeCompare(a.date));
-        return activeTab === 'upcoming' ? futureEvents : pastEvents
-    };
 
     const handleLogout = () => {
         Cookies.remove('accessToken');
@@ -153,33 +127,8 @@ const ProfilePage = () => {
         }
     };
 
-    const fetchMyEvents = async () => {
-        try {
-            setIsEventLoading(true);
-            const token = Cookies.get('accessToken');
-            const MyEventsRes = await fetch(`${BACKEND_URL}/api/events/my-joined/`,{
-                method: 'GET',
-                headers: {
-                    'content-Type': 'application/json',
-                    ...(token ? {'Authorization': `Bearer ${token}`} : {})
-                }
-            });
-            if(!MyEventsRes.ok){
-                throw new Error (`イベント情報取得エラー${MyEventsRes.status}`)
-            }
-            const MyEventsData = await MyEventsRes.json();
-            setMyEvents(MyEventsData.results);
-        }catch(err){
-            console.error(err);
-            setMyEventError("イベント情報の取得に失敗しました。時間を空けて再度お試しください。")
-        }finally{
-            setIsEventLoading(false);
-        }
-    };
-
     useEffect(() => {
         fetchUser();
-        fetchMyEvents();
     },[])
 
     const deactivateUser = async () => {
@@ -248,49 +197,6 @@ const ProfilePage = () => {
                     </div>
                 )
             }
-            <div className="m-2 p-4 bg-white rounded-lg shadow-lg">
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-gray-800">
-                        {activeTab === "upcoming" ? "Upcoming Events" : "Event History"}
-                    </h2>
-                    <div className="bg-gray-100 p-1 rounded-lg flex text-xs font-bold ">
-                        <button
-                            onClick={() => setActiveTab("upcoming")}
-                            className={`px-3 py-1.5 rounded-md transition-all ${
-                                activeTab === "upcoming"
-                                    ? "bg-white text-blue-600 shadow-sm"
-                                    : "text-gray-500 hover:text-gray-700"
-                            }`}
-                        >
-                            Upcoming
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("past")}
-                            className={`px-3 py-1.5 rounded-md transition-all ${
-                                activeTab === "past"
-                                    ? "bg-white text-gray-800 shadow-sm"
-                                    : "text-gray-500 hover:text-gray-700"
-                            }`}
-                        >
-                            Past
-                        </button>
-                    </div>
-                </div>
-                {isEventLoading
-                    ? (
-                        <div className="m-2 p-10 bg-white rounded-lg  flex justify-center">
-                            <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-                        </div>
-                    ) : (
-                        <div>
-                            {(!MyEventError)
-                                ? <EventHistory events={filterdEvents()} onOpenModal={(event) => setSelectedEvent(event)} />
-                                : <p className="text-red-600 m-2 p-2 bg-white rounded-lg shadow-lg">{MyEventError}</p>
-                            }
-                        </div>
-                    )
-                }
-            </div>
             <div className="m-2 rounded overflow-hidden shadow-sm border border-gray-100 rounded-lg shadow-lg">
                 <MenuButton
                     icon="✏️"
@@ -314,9 +220,6 @@ const ProfilePage = () => {
                     </div>
                 )}
             </div>
-            {selectedEvent && (
-                <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} readOnly={true} />
-            )}
             {isEditOpen && userProfile && (
                 <EditProfileModal 
                     user={userProfile}
