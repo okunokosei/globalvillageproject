@@ -1,6 +1,6 @@
 // src/constants/mockData.ts
 
-import { Event, Participant, UserProfileType, GalleryType } from "../app/dashboard/types"; 
+import { Event, UserProfileType, GalleryType } from "../app/dashboard/types"; 
 // import { Participant } from '../app/dashboard/types';
 
 export const MOCK_EVENTS: Event[] = [
@@ -46,33 +46,6 @@ export const MOCK_EVENTS: Event[] = [
 ];
 
 
-export const MOCK_PARTICIPANTS: Participant[] = [
-    {
-        id: 1,
-        name: "Alex Johnson",
-        room_number: "101"
-    },
-    {
-        id: 2,
-        name: "Yuki Tanaka",
-        room_number: "202"
-    },
-    {
-        id: 3,
-        name: "Maria Garcia",
-        room_number: "305"
-    },
-    {
-        id: 4,
-        name: "John Smith",
-        room_number: "104"
-    },
-    {
-        id: 5,
-        name: "Sakura Yamamoto",
-        room_number: "401"
-    },
-];
 
 export const MOCK_USER: UserProfileType ={
     id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11", // 適当なUUID

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Event } from "../types";
-import { MOCK_EVENTS, MOCK_PARTICIPANTS } from "../../../constants/MockData";
+import { MOCK_EVENTS} from "../../../constants/MockData";
 
 import { format } from 'date-fns';
 
