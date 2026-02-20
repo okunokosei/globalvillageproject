@@ -8,7 +8,7 @@ const EventCard = ({event, onClick}: {event: Event, onClick: () => void}) => {
         <div>
             <button
                 onClick={onClick}
-                className="w-full h-40 text-left bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-4"
+                className="w-full h-38 text-left bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-4"
             >
                 {/* 左 */}
                 <div className="h-24 w-20 bg-blue-700 rounded-lg text-white flex flex-col items-center justify-center shadow-sm shrink-0">
@@ -28,11 +28,10 @@ const EventCard = ({event, onClick}: {event: Event, onClick: () => void}) => {
                         <span className="truncate">{event.location}</span>
                     </div>
                 </div>
+                {/* 右側 */}
                 <div className="h-24 w-24 rounded-lg shrink-0 overflow-hidden">
                     {event.cover_image && (
-                        <div>
-                            <img src={event.cover_image} alt="" className="w-full h-full object-cover"/>
-                        </div>
+                        <img src={event.cover_image} alt="" className="w-full h-full object-cover"/>
                     )}
                 </div>
             </button>

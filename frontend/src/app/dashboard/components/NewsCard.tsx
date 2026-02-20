@@ -1,28 +1,42 @@
-import { Pin } from "lucide-react";
+import { Pin, Clock } from "lucide-react";
 import { Notice } from "../types";
 
 const NewsCard = ({notice, onClick}: {notice: Notice, onClick: () => void}) => {
     return (
         <button
             onClick={onClick}
-            className={`w-full h-32 text-left bg-white rounded-xl border p-4 shadow-sm hover:shadow-md active:scale-[0.99] transition-all flex gap-4 ${
-                notice.is_pinned ? "border-slate-300 ring-1 ring-slate-100" : "border-gray-100"}`}
+            className={`w-full h-38 text-left bg-white rounded-xl border p-4 shadow-sm hover:shadow-md active:scale-[0.98] transition-all flex items-center gap-4 ${
+                notice.is_pinned 
+                    ? "border-blue-200 bg-blue-50/10 ring-1 ring-blue-50" 
+                    : "border-gray-100"
+            }`}
         >
             {/* 左 */}
-            <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                    {notice.is_pinned && <Pin size={14} className="text-slate-800 fill-slate-800"/>}
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: notice.tag.color_code }}>{notice.tag.name}</span>
-                    <span className="text-xs text-gray-400">{notice.created_at}</span>
+            <div className="flex-1 flex flex-col items-start gap-1.5 min-w-0">
+                <div className="flex items-center gap-2">
+                    {notice.is_pinned &&
+                        <Pin size={14} className="text-blue-300 fill-blue-100 shrink-0"/>
+                    }
+                    <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
+                        {notice.tag.name}
+                    </span>
                 </div>
-                <h3 className="font-bold text-slate-800 text-sm leading-snug line-clamp-2">{notice.title_jp}</h3>
+                <h3 className="font-bold text-gray-800 text-[16px] leading-tight line-clamp-2 mt-1">
+                    {notice.title_jp}
+                </h3>
+                <div className="flex items-center gap-1 text-xs text-gray-400 mt-0.5">
+                    <Clock size={12} className="shrink-0" />
+                    <span className="truncate">
+                        {notice.created_at}
+                    </span>
+                </div>
             </div>
             {/* 右 */}
-            {notice.image && (
-                <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-100">
-                    <img src={notice.image} alt="" />
-                </div>
-            )}
+            <div className="w-24 h-24 rounded-lg shrink-0 overflow-hidden border border-gray-100 bg-gray-50">
+                {notice.image && (
+                    <img src={notice.image} alt="" className="w-full h-full object-cover"/>
+                )}
+            </div>
         </button>
     );
 };
