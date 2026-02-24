@@ -58,6 +58,9 @@ const CreateGalleryModal = ({onClose}: {onClose: () => void}) => {
         }
     };
 
+    const inputClassName = "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm";
+    const labelClassName = "block text-sm font-bold text-gray-700 mb-1.5";
+
     const renderContent = () => {
         if(successMsg) {
             return (
@@ -72,10 +75,13 @@ const CreateGalleryModal = ({onClose}: {onClose: () => void}) => {
             );
         }
         return (
-            <div>
-                <h1 className="text-2xl font-bold mb-5">新しいアルバムを作成する</h1>
+            <div className="max-h-[80vh] overflow-y-auto overflow-x-hidden p-6 sm:p-8 custom-scrollbar">
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-gray-800">新しいアルバム</h1>
+                    <p className="text-sm text-gray-500 mt-1">アルバムの情報を入力してください</p>
+                </div>
                 {errorMsg && (
-                    <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm items-start gap-2 animate-in slide-in-from-top-2">
+                    <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm flex items-start gap-2 animate-in slide-in-from-top-2">
                         <span className="text-lg">⚠️</span>
                         <div>
                             <p className="font-bold">エラーが発生しました。</p>
@@ -83,66 +89,100 @@ const CreateGalleryModal = ({onClose}: {onClose: () => void}) => {
                         </div>
                     </div>
                 )}
-                <form onSubmit={handleCreateGallery} className="flex flex-col gap-4">
-                    <div>
-                        <label className="block text-sm font-medium">タイトル（日本語）</label>
-                        <input 
-                            type="text"
-                            value={titleJp}
-                            onChange={(e) => setTitleJp(e.target.value)}
-                            className="border p-2 w-full rounded"
-                            placeholder="日本語でタイトルを入力"
-                        />
+                <form onSubmit={handleCreateGallery} className="flex flex-col gap-5">
+                    <div className="grid grid-cols-1 gap-5">
+                        <div>
+                            <label className={labelClassName}>タイトル（日本語）</label>
+                            <input 
+                                type="text"
+                                value={titleJp}
+                                onChange={(e) => setTitleJp(e.target.value)}
+                                className={inputClassName}
+                                placeholder="日本語でタイトルを入力"
+                            />
+                        </div>
+                        <div>
+                            <label className={labelClassName}>タイトル（英語）</label>
+                            <input 
+                                type="text"
+                                value={titleEn}
+                                onChange={(e) => setTitleEn(e.target.value)}
+                                className={inputClassName}
+                                placeholder="英語でタイトルを入力"
+                            />
+                        </div>
                     </div>
+
                     <div>
-                        <label className="block text-sm font-medium">タイトル（英語）</label>
-                        <input 
-                            type="text"
-                            value={titleEn}
-                            onChange={(e) => setTitleEn(e.target.value)}
-                            className="border p-2 w-full rounded"
-                            placeholder="英語でタイトルを入力"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium">開催日</label>
+                        <label className={labelClassName}>開催日</label>
                         <input 
                             type="date"
                             value={eventDate}
                             onChange={(e) => setEventDate(e.target.value)}
-                            className="border p-2 w-full rounded"
+                            className={inputClassName}
                         />
                     </div>
+
                     <div>
                         <label className="block text-sm font-medium">イメージ画像</label>
-                        <input 
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => {
-                                if(e.target.files && e.target.files[0]){
-                                    setCoverImageUrl(e.target.files[0]);
-                                }
-                            }}
-                            className="border p-2 w-full rounded"
-                        />
+                        <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200
+                            ${coverImageUrl
+                                    ? "border-blue-400 bg-blue-50 hover:bg-blue-100"
+                                    : "border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-blue-400"
+                                }`}
+                        >
+                            {coverImageUrl ? (
+                                <div className="flex flex-col items-center justify-center p-4 text-center">
+                                    <div className="w-10 h-10 mb-2 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <p className="text-sm font-bold text-blue-700 truncate max-w-xs px-2">
+                                        {coverImageUrl.name}
+                                    </p>
+                                    <p className="text-xs text-blue-500 mt-1">クリックして別の画像に変更</p>
+                                </div>
+                            ):(
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg className="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                    </svg>
+                                    <p className="text-sm text-gray-500"><span className="font-bold text-blue-600">クリックしてファイルを選択</span></p>
+                                    <p className="text-xs text-gray-400 mt-1">PNG, JPG, GIF など</p>
+                                </div>
+                            )}
+                            <input 
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    if(e.target.files && e.target.files[0]){
+                                        setCoverImageUrl(e.target.files[0]);
+                                    }
+                                }}
+                                className="hidden"
+                            />
+                        </label>
                     </div>
+
                     <div>
-                        <label className="block text-sm font-medium">Google Photos URL</label>
+                        <label className={labelClassName}>Google Photos URL</label>
                         <input 
                             type="text"
                             value={googlePhotosUrl}
                             onChange={(e) => setGooglePhotosUrl(e.target.value)}
-                            className="border p-2 w-full rounded"
+                            className={inputClassName}
                             placeholder="Google Photos の共有URLを入力"
                         />
                     </div>
                     <button
                         type="submit"
                         disabled={!isRequiredFieldsFilled}
-                        className={
-                            `p-3 text-white font-bold rounded
-                            ${isRequiredFieldsFilled ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400 cursor-not-allowed"}`
-                        }
+                        className={`w-full py-4 rounded-xl font-bold text-white transition-all duration-200 shadow-lg
+                            ${isRequiredFieldsFilled
+                                ? "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 shadow-blue-200 transform active:scale-[0.98]"
+                                : "bg-gray-300 cursor-not-allowed shadow-none"
+                            }`}
                     >
                         作成する
                     </button>
@@ -153,7 +193,7 @@ const CreateGalleryModal = ({onClose}: {onClose: () => void}) => {
 
     return (
         <ModalBase onClose={onClose} maxWidth="max-w-md">
-            <div className="p-10">
+            <div>
                 {renderContent()}
             </div>
         </ModalBase>
