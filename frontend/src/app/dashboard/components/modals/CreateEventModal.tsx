@@ -89,7 +89,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
             );
         }
         return (
-            <div className="max-h-[80vh] overflow-y-auto px-2 py-2 sm:p-8 custom-scrollbar">
+            <div className="max-h-[80vh] overflow-y-auto overflow-x-hidden p-6 sm:p-8 custom-scrollbar">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold text-gray-800">新しいイベント</h1>
                     <p className="text-sm text-gray-500 mt-1">イベントの情報を入力してください</p>
@@ -264,7 +264,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
 
     return (
         <ModalBase onClose={onClose} maxWidth="max-w-md">
-            <div className="p-10">
+            <div>
                 {renderContent()}
             </div>
         </ModalBase>
