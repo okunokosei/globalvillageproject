@@ -121,6 +121,9 @@ const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
     //         </div>
     //     );
     // }
+    const inputClassName = "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm";
+    const labelClassName = "block text-sm font-bold text-gray-700 mb-1.5";
+
 
     const renderContent = () => {
         if(successMsg){
@@ -137,10 +140,13 @@ const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
         }
 
         return (
-            <div>
-                <h1 className="text-2xl font-bold mb-5">新しいお知らせを作成する</h1>
+            <div className="max-h-[80vh] overflow-y-auto overflow-x-hidden p-6 sm:p-8 custom-scrollbar">
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-gray-800">新しいお知らせ</h1>
+                    <p className="text-sm text-gray-500 mt-1">お知らせの情報を入力してください</p>
+                </div>
                 {errorMsg && (
-                    <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm items-start gap-2 animate-in slide-in-from-top-2">
+                    <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm flex items-start gap-2 animate-in slide-in-from-top-2">
                         <span className="text-lg">⚠️</span>
                         <div>
                             <p className="font-bold">エラーが発生しました。</p>
@@ -150,89 +156,140 @@ const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
                 )}
                 <form onSubmit={handleCreateNotice} className="flex flex-col gap-4">
                     <div>
-                        <label className="block text-sm font-medium mb-2">タグを選択</label>
-                        {noticesTags.map((tag) => (
-                            <button
-                                key={tag.id}
-                                type="button"
-                                onClick={() => setSelectedTagId(tag.id)}
-                                className={`text-sm p-1 m-1 border rounded-full font-bold ${
-                                    selectedTagId === tag.id
-                                        ?"text-white shadow-md transform scale-105 bg-blue-500"
-                                        :"bg-withe text-gray-500 hover:bg-gray-100"
+                        <label className={labelClassName}>タグを選択</label>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {noticesTags.map((tag) => (
+                                <button
+                                    key={tag.id}
+                                    type="button"
+                                    onClick={() => setSelectedTagId(tag.id)}
+                                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 ${
+                                        selectedTagId === tag.id
+                                            ?"bg-blue-600 text-white shadow-md shadow-blue-200 scale-105"
+                                            :"bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
+                                    }`}
+                                >
+                                    {tag.name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <div className="flex flex-col">
+                            <span className="text-sm font-bold text-gray-800">上部にピン留めする（Pin to top）</span>
+                            <span className="text-xs text-gray-500 mt-0.5">重要なお知らせを一番上に固定します</span>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setIsPinned(!isPinned)}
+                            className={`inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-300 
+                                ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                    isPinned ? 'bg-blue-500' : 'bg-gray-300'
                                 }`}
-                            >
-                                {tag.name}
-                            </button>
-                        ))}
-                    </div>
-                    <div>
-                        <label className="flex">
-                            <input 
-                                type="checkbox"
-                                onChange={() => setIsPinned(!isPinned)}
-                                className="w-4 h-4 mr-2 rounded"
+                        >
+                            <span 
+                                className={`inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition-transform duration-300 ease-in-out ${
+                                    isPinned ? 'translate-x-5' : 'translate-x-0.5'
+                                }`}
                             />
-                            <span className="text-sm font-medium">Pin to top</span>
-                        </label>
+                        </button>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium">タイトル(日本語)</label>
-                        <input
-                            type="text"
-                            value={titleJp}
-                            onChange={(e) => setTitleJp(e.target.value)}
-                            className="border p-2 w-fullrounded"
-                            placeholder="日本語でタイトルを入力"
-                        />
+
+                    <div className="grid grid-cols-1 gap-5">
+                        <div>
+                            <label className={labelClassName}>タイトル(日本語)</label>
+                            <input
+                                type="text"
+                                value={titleJp}
+                                onChange={(e) => setTitleJp(e.target.value)}
+                                className={inputClassName}
+                                placeholder="日本語でタイトルを入力"
+                            />
+                        </div>
+                        <div>
+                            <label className={labelClassName}>タイトル(英語)</label>
+                            <input
+                                type="text"
+                                value={titleEn}
+                                onChange={(e) => setTitleEn(e.target.value)}
+                                className={inputClassName}
+                                placeholder="Enter title in English"
+                            />
+                        </div>
                     </div>
+
                     <div>
-                        <label className="block text-sm font-medium">タイトル(英語)</label>
-                        <input
-                            type="text"
-                            value={titleEn}
-                            onChange={(e) => setTitleEn(e.target.value)}
-                            className="border p-2 w-full rounded"
-                            placeholder="Enter title in English"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium">内容(日本語)</label>
+                        <label className={labelClassName}>内容(日本語)</label>
                         <textarea
                             onChange={(e) => setBodyJp(e.target.value)}
-                            className="border p-2 w-full rounded resize-y"
+                            className={inputClassName}
                             rows={4}
                             placeholder="日本語で説明を入力"
                             value={bodyJp}
                         />
                     </div>
                     <div>
-                        <label className="block text-sx font-medium">内容(英語)</label>
+                        <label className={labelClassName}>内容(英語)</label>
                         <textarea
                             onChange={(e) => setBodyEn(e.target.value)}
-                            className="border p-2 w-full rounded resize-y"
+                            className={inputClassName}
                             rows={4}
                             placeholder="Enter description in English"
                             value={bodyEn}
                         />
                     </div>
+
                     <div>
-                        <label className="block text-sm font-medium">画像</label>
-                        <input 
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => {
-                                if(e.target.files && e.target.files[0]){
-                                    setImageFile(e.target.files[0]);
-                                }
-                            }}
-                            className="border p-2 w-full rounded"
-                        />
+                        <label className={labelClassName}>カバー画像</label>
+                        <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200
+                            ${imageFile
+                                ? "border-blue-400 bg-blue-50 hover:bg-blue-100"
+                                : "border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-blue-400"
+                            }`}
+                        >
+                            {imageFile ? (
+                                <div className="flex flex-col items-center justify-center p-4 text-center">
+                                    <div className="w-10 h-10 mb-2 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <p className="text-sm font-bold text-blue-700 truncate max-w-xs px-2">
+                                        {imageFile.name}
+                                    </p>
+                                    <p className="text-xs text-blue-500 mt-1">クリックして別の画像に変更</p>
+                                </div>
+                            ):(
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg className="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                    </svg>
+                                    <p className="text-sm text-gray-500"><span className="font-bold text-blue-600">クリックしてファイルを選択</span></p>
+                                    <p className="text-xs text-gray-400 mt-1">PNG, JPG, GIF など</p>
+                                </div>
+                            )}
+                            <input 
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    if(e.target.files && e.target.files[0]){
+                                        setImageFile(e.target.files[0]);
+                                    }
+                                }}
+                                className="hidden"
+                            />
+                        </label>
                     </div>
+
                     <button
                         type="submit"
-                        disabled={!isRequiredFieldsFilled || isLoading}
-                        className={`p-3 text-white font-bold rounded ${(isRequiredFieldsFilled || isLoading) ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400 cursor-not-allowed"}`}
+                        disabled={!isRequiredFieldsFilled}
+                        className={`w-full py-4 rounded-xl font-bold text-white transition-all duration-200 shadow-lg
+                            ${isRequiredFieldsFilled
+                                ? "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 shadow-blue-200 transform active:scale-[0.98]"
+                                : "bg-gray-300 cursor-not-allowed shadow-none"
+                            }`}
                     >
                         作成する
                     </button>
@@ -243,7 +300,7 @@ const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
 
     return (
         <ModalBase onClose={onClose} maxWidth="max-w-md">
-            <div className="p-10">
+            <div>
                 {renderContent()}
             </div>
         </ModalBase>
