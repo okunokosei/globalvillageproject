@@ -72,23 +72,26 @@ const EventPage = () => {
 
 
     return (
-        <div>
-            <Header title="Event" subtitle="カレンダーとリスト" />
-            <div className="sticky top-[57px] z-40 bg-gray-50 pt-2 px-2 pb-2">
-                <div className="flex bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
-                    <TabButton 
-                        label="Calendar"
-                        isActive={viewMode === "calendar"}
-                        onClick={() => setViewMode("calendar")}
-                    />
-                    <TabButton 
-                        label="List"
-                        isActive={viewMode === "list"}
-                        onClick={() => setViewMode("list")}
-                    />
+        <div className="h-[100dvh] overflow-y-auto overflow-x-hidden overscroll-none hide-scrollbar">
+            
+            <div className="sticky top-0 z-50 bg-gray-50">
+                <Header title="Event" subtitle="カレンダーとリスト" />
+                <div className="pt-1 px-2 pb-2">
+                    <div className="flex bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+                        <TabButton 
+                            label="Calendar"
+                            isActive={viewMode === "calendar"}
+                            onClick={() => setViewMode("calendar")}
+                        />
+                        <TabButton 
+                            label="List"
+                            isActive={viewMode === "list"}
+                            onClick={() => setViewMode("list")}
+                        />
+                    </div>
                 </div>
             </div>
-            <div className="px-4">
+            <div className="px-4 pb-24 pt-2">
                 {
                     (viewMode === "calendar") 
                     ? (

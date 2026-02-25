@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 const ModalBase = ({ children, onClose, maxWidth }: {children: React.ReactNode, onClose: () => void, maxWidth: string}) => {
     return (
         <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200 hide-scrollbar"
             onClick={onClose}
         >
             <div
@@ -16,7 +16,7 @@ const ModalBase = ({ children, onClose, maxWidth }: {children: React.ReactNode, 
                 >
                     <X size={20} />
                 </button>
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto hide-scrollbar">
                     {children}
                 </div>
             </div>

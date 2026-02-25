@@ -2,6 +2,7 @@ import { Pin, Clock } from "lucide-react";
 import { Notice } from "../types";
 
 const NewsCard = ({notice, onClick}: {notice: Notice, onClick: () => void}) => {
+    const firstImageUrl = notice.images?.[0]?.image;
     return (
         <button
             onClick={onClick}
@@ -33,8 +34,8 @@ const NewsCard = ({notice, onClick}: {notice: Notice, onClick: () => void}) => {
             </div>
             {/* 右 */}
             <div className="w-24 h-24 rounded-lg shrink-0 overflow-hidden border border-gray-100 bg-gray-50">
-                {notice.image && (
-                    <img src={notice.image} alt="" className="w-full h-full object-cover"/>
+                {firstImageUrl && (
+                    <img src={firstImageUrl} alt="" className="w-full h-full object-cover"/>
                 )}
             </div>
         </button>

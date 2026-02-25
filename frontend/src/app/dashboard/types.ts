@@ -5,6 +5,11 @@ export type NoticeTag = {
     color_code: string;
 };
 
+export type NoticeImage = {
+    id: number;
+    image: string;
+};
+
 export type Notice = {
     id: number;
     tag: NoticeTag;
@@ -12,7 +17,7 @@ export type Notice = {
     title_jp: string;
     body_en: string;
     body_jp: string;
-    image: string | null;
+    images: NoticeImage[]
     is_pinned: boolean;
     created_at: string;
 };

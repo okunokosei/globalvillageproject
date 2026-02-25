@@ -5,11 +5,36 @@ import { Notice } from "../types";
 const NewsDetailModal = ({notice, onClose}: {notice: Notice, onClose: () => void }) => {
     return (
         <ModalBase onClose={onClose} maxWidth="max-w-md">
-            {notice.image && (
-                <div className="w-full h-56 bg-gray-100">
-                    <img src={notice.image} alt="" className="w-full h-full object-cover"/>
+            {notice.images && notice.images.length > 0 && (
+                <div className="relative w-full h-64 bg-transparent">
+                    <div className="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
+                        {notice.images.map((img) => (
+                            <div
+                                key={img.id}
+                                className="relative w-full h-full shrink-0 snap-center flex items-center justify-center overflow-hidden"
+                            >
+                                <div 
+                                    className="absolute inset-0 bg-cover bg-center blur-lg opacity-40 scale-110"
+                                    style={{ backgroundImage: `url(${img.image})`}}
+                                />
+                                <img
+                                    src={img.image}
+                                    alt=""
+                                    className="z-5 w-full h-full object-contain drop-shadow-lg"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    {notice.images.length > 1 && (
+                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/30 px-2 py-1 rounded-full backdrop-blur-sm">
+                            {notice.images.map((_, index) => (
+                                <div key={index} className="w-1.5 h-1.5 rounded-full bg-white/80"></div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
+
             <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
                     {notice.is_pinned && <Pin size={16} className="text-slate-800 fill-slate-800" />}

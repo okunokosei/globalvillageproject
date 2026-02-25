@@ -5,7 +5,7 @@ const EventCard = ({event, onClick}: {event: Event, onClick: () => void}) => {
     const month = dateObj.toLocaleDateString('en-US', {month: 'short'}).toUpperCase();
     const day = dateObj.toLocaleDateString('en-US', {day: 'numeric'})
     return (
-        <div>
+        <div className="shrink-0">
             <button
                 onClick={onClick}
                 className="w-full h-38 text-left bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-4"

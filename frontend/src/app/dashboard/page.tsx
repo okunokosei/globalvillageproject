@@ -10,44 +10,6 @@ import NewsDetailModal from "./components/NewsModal";
 
 import Cookies from 'js-cookie';
 
-// モックデータ-------------------------------------
-const MOCK_NOTICES: Notice[] = [
-    {
-        id: 1,
-        tag: { id: 1, name: "重要", slug: "important", color_code: "#EF4444" },
-        title_en: "Important: Rent Payment Due",
-        title_jp: "【重要】今月の家賃の支払いについて",
-        body_en: "Please pay by the 25th",
-        body_jp: "25日までに支払いを完了させてください。遅れる場合はオフィスまで連絡をお願いします。",
-        image: "https://placehold.co/600x400/fee2e2/991b1b?text=Payment",
-        is_pinned: true,
-        created_at: "2026-01-30",
-    },
-    {
-    id: 2,
-    tag: { id: 2, name: "イベント", slug: "event", color_code: "#3B82F6" }, // 青
-    title_en: "Welcome Party for New Residents",
-    title_jp: "新入寮生歓迎パーティーのお知らせ🎉",
-    body_en: "Let's enjoy pizza and drinks!",
-    body_jp: "ピザとドリンクを用意しています！みんなで楽しみましょう。",
-    image: "https://placehold.co/600x400/dbeafe/1e40af?text=Party",
-    is_pinned: false,
-    created_at: "2026-02-01",
-  },
-  {
-    id: 3,
-    tag: { id: 3, name: "施設", slug: "facility", color_code: "#64748B" }, // グレー
-    title_en: "Kitchen Cleaning Schedule",
-    title_jp: "共用キッチンの定期清掃について",
-    body_en: "Cleaning will start at 10 AM.",
-    body_jp: "午前10時から清掃業者が入ります。その間はキッチンを使用できません。",
-    image: null, // 画像なしパターン
-    is_pinned: false,
-    created_at: "2026-02-05",
-  },
-];
-
-// ----------------------------------------------------
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -109,7 +71,7 @@ const HomePage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="bg-gray-50 h-[100dvh] overflow-y-auto overflow-x-hidden overscroll-none hide-scrollbar">
             <Header title="Home" subtitle="お知らせと生活ガイド" />
             <div className="space-y-3 pt-4 pb-24 px-4">
                 {

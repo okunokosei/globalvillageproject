@@ -136,10 +136,10 @@ const GalleryPage = () => {
     }
 
     return (
-        <div>
+        <div className="h-[100dvh] overflow-y-auto overflow-x-hidden overscroll-none hide-scrollbar">
             <Header title="Album" subtitle="イベント写真" />
 
-            <div className="p-4">
+            <div className="px-4 pb-24 pt-2">
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     {galleries.map((gallery) => (
                         <GalleryItem 
