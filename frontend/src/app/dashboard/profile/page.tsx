@@ -192,7 +192,7 @@ const ProfilePage = () => {
                     <div>
                         {userProfile
                             ? <UserProfile userProfile={userProfile} userLanguage={language} changeLanguage={setLanguage} />
-                            : <p className="text-red-600 m-2 p-2 bg-white rounded-lg shadow-lg">{profileGetError}</p>
+                            : <p className="text-red-600 m-2 p-4 bg-white rounded-lg shadow-lg">{profileGetError}</p>
                         }
                     </div>
                 )
