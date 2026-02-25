@@ -7,6 +7,7 @@ import { UserProfileType } from "../types";
 import Header from "../components/Header";
 import UserProfile from "../components/profile/UserProfile";
 import EditProfileModal from "../components/profile/EditProfileModal";
+import { Pencil, LogOut, Trash2 } from "lucide-react";
 
 const MenuButton = ({icon, label, onClick, isDanger}: any) => {
     return (
@@ -17,10 +18,10 @@ const MenuButton = ({icon, label, onClick, isDanger}: any) => {
                 `}
         >
             <div className="flex items-center gap-3">
-                <span className="text-xl ">{icon}</span>
+                <span className={`text-xl ${isDanger ? 'text-red-500' : 'text-blue-500'}`}>{icon}</span>
                 <span className="font-medium text-sm">{label}</span>
             </div>
-            <svg className="w-5 h-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
         </button>
@@ -192,24 +193,24 @@ const ProfilePage = () => {
                     <div>
                         {userProfile
                             ? <UserProfile userProfile={userProfile} userLanguage={language} changeLanguage={setLanguage} />
-                            : <p className="text-red-600 m-2 p-4 bg-white rounded-lg shadow-lg">{profileGetError}</p>
+                            : <p className="text-red-600 m-2 p-4 bg-white rounded-lx shadow-sm">{profileGetError}</p>
                         }
                     </div>
                 )
             }
-            <div className="m-2 rounded overflow-hidden shadow-sm border border-gray-100 rounded-lg shadow-lg">
+            <div className="bg-white m-2 p-2 overflow-hidden shadow-sm border border-gray-100 rounded-xl">
                 <MenuButton
-                    icon="✏️"
+                    icon={<Pencil size={20} strokeWidth={2.5} />}
                     label="Edit Profile"
                     onClick={() => setIsEditOpen(true)}
                 />
                 <MenuButton
-                    icon="🚪"
+                    icon={<LogOut size={20} strokeWidth={2.5} />}
                     label="Log out"
                     onClick={() => setIsLogoutOpen(true)}
                 />
                 <MenuButton
-                    icon="🗑️"
+                    icon={<Trash2 size={20} strokeWidth={2.5}/>}
                     label="Delete Account"
                     onClick={() => setIsDeleteOpen(true)}
                     isDanger={true}
