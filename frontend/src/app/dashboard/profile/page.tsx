@@ -182,7 +182,7 @@ const ProfilePage = () => {
     }
 
     return (
-        <div>
+        <div className="h-[100dvh] overflow-y-auto overflow-x-hidden overscroll-none hide-scrollbar">
             <Header title="Profile" subtitle="ユーザー情報" />
             {isProfileLoading
                 ? (
