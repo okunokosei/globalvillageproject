@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from rest_framework import generics
-from .models import Notice, NoticeTag
+from .models import Notice, NoticeTag, NoticeImage
 from .serializers import NoticeSerializer, NoticeTagSerializer
 
 class NoticeListView(generics.ListCreateAPIView):
