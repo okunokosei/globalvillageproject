@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from .models import Notice, NoticeTag
+from .models import Notice, NoticeTag, NoticeImage
+
+class NoticeImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NoticeImage
+        fields = ['id', 'image']
 
 class NoticeTagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,15 +12,19 @@ class NoticeTagSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'slug', 'color_code']
 
 class NoticeSerializer(serializers.ModelSerializer):
-    # tag = NoticeTagSerializer(read_only=True)
+    
+    # 「入力のルール（バリデーション）」と「出力の基本フォーマット」を同時に決める場所
+    # 「read_only=True」は、「バリデーションチェックもしない」し、「POSTで送られてきたデータを完全に捨て去る」強い指定
     created_at = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
-    # updated_at = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
+    
+    # 「many=Trueで配列を返す設定」、「imagesはrelated_name。親側がリモコンだけ持ってるイメージ」
+    images = NoticeImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Notice
         fields = [
             'id', 'tag', 'title_en', 'title_jp', 
-            'body_en', 'body_jp', 'image', 'is_pinned', 'created_at'
+            'body_en', 'body_jp', 'images', 'is_pinned', 'created_at'
         ]
         read_only_fields = (
             'id',
@@ -24,8 +33,8 @@ class NoticeSerializer(serializers.ModelSerializer):
             'created_by',
             'updated_by',
         )
-        # 「お、tag は外部キーだな。じゃあ、データベースのID（主キー）をそのまま出しとこ。」という挙動をする。
-        # 「tag = NoticeTagSerializer(read_only=True)」と指定することで、主キーじゃなくて、NoticeTagSerializerを使って変換する！
+    
+    # 「出力の直前に、データを改造する最終関門」
     def to_representation(self, instance):
         response = super().to_representation(instance)
         if instance.tag:

@@ -28,12 +28,6 @@ class Notice(models.Model):
     title_jp = models.CharField(verbose_name="日本語タイトル", max_length=200)
     body_en = models.TextField(verbose_name="英語本文")
     body_jp = models.TextField(verbose_name="日本語本文")
-    image = models.ImageField(
-        verbose_name="添付画像",
-        upload_to=notice_image_path,
-        null=True,
-        blank=True
-    )
     is_pinned = models.BooleanField(verbose_name="固定フラグ", default=False)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="作成者", related_name="created_notices", null=True, blank=True, on_delete=models.SET_NULL)
     updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="最終更新者", related_name="updated_notices", null=True, blank=True, on_delete=models.SET_NULL)
@@ -45,3 +39,10 @@ class Notice(models.Model):
 
     class Meta:
         verbose_name = verbose_name_plural = 'お知らせ'
+
+class NoticeImage(models.Model):
+    notice = models.ForeignKey(Notice, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(verbose_name="添付画像", upload_to=notice_image_path)
+
+    class Meta:
+        verbose_name = verbose_name_plural = 'お知らせ画像'
