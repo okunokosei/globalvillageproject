@@ -15,7 +15,7 @@ const NewsCard = ({notice, onClick}: {notice: Notice, onClick: () => void}) => {
             <div className="flex-1 flex flex-col items-start gap-1.5 min-w-0">
                 <div className="flex items-center gap-2">
                     {notice.is_pinned &&
-                        <Pin size={14} className="text-blue-300 fill-blue-100 shrink-0"/>
+                        <Pin size={14} className="text-blue-500 fill-blue-300 shrink-0"/>
                     }
                     <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
                         {notice.tag.name}
