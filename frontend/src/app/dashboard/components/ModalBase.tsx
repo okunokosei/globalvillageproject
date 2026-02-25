@@ -12,7 +12,7 @@ const ModalBase = ({ children, onClose, maxWidth }: {children: React.ReactNode, 
             >
                 <button
                     onClick={onClose}
-                    className="absolute top-3 right-3 z-10 bg-white/50 backdrop-blur-sm p-1.5 rouded-full text-gray-600 hover:bg-white transition-colors"
+                    className="absolute top-3 right-3 z-20 bg-white/50 backdrop-blur-sm p-1.5 rouded-full text-gray-600 hover:bg-white transition-colors"
                 >
                     <X size={20} />
                 </button>

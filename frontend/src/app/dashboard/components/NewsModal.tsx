@@ -20,7 +20,7 @@ const NewsDetailModal = ({notice, onClose}: {notice: Notice, onClose: () => void
                                 <img
                                     src={img.image}
                                     alt=""
-                                    className="z-5 w-full h-full object-contain drop-shadow-lg"
+                                    className="z-10 w-full h-full object-contain drop-shadow-lg p-2"
                                 />
                             </div>
                         ))}
@@ -37,8 +37,8 @@ const NewsDetailModal = ({notice, onClose}: {notice: Notice, onClose: () => void
 
             <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                    {notice.is_pinned && <Pin size={16} className="text-slate-800 fill-slate-800" />}
-                    <span className="text-[12px] font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: notice.tag.color_code }}>{notice.tag.name}</span>
+                    {notice.is_pinned && <Pin size={16} className="text-blue-500 fill-blue-300 shrink-0" />}
+                    <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-blue-500 text-white border border-blue-500 shrink-0">{notice.tag.name}</span>
                 </div>
                 <h2 className="text-xl font-bold text-slate-900 mb-2 leading-tight">{notice.title_jp}</h2>
                 <div className="flex items-center gap-1 text-sm text-gray-400 mb-6">
