@@ -19,12 +19,7 @@ class Events(models.Model):
     date = models.DateField(verbose_name="開催日")
     start_time = models.TimeField(verbose_name="開始時刻")
     end_time = models.TimeField(verbose_name="終了時刻")
-    cover_image = models.ImageField(
-        verbose_name="添付画像",
-        upload_to=event_image_path,
-        null=True,
-        blank=True
-    )
+
     google_form_url = models.TextField(verbose_name="グーグルフォームURL", null=True, blank=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="作成者", related_name="created_events", null=True, blank=True, on_delete=models.SET_NULL)
     updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="更新者", related_name="updated_events", null=True, blank=True, on_delete=models.SET_NULL)
@@ -37,3 +32,9 @@ class Events(models.Model):
     class Meta:
         verbose_name = verbose_name_plural = 'イベント詳細'
 
+class EventImage(models.Model):
+    event = models.ForeignKey(Events, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(verbose_name="添付画像", upload_to=event_image_path)
+
+    class Meta:
+        verbose_name = verbose_name_plural = 'イベント画像'
