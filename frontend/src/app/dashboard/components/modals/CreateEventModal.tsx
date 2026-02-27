@@ -12,6 +12,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
 
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [titleEn, setTitleEn] = useState('');
     const [titleJp, setTitleJp] = useState('');
@@ -28,6 +29,7 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
 
     const handleCreateEvent = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
         setErrorMsg(null);
         setSuccessMsg(null);
 
@@ -69,6 +71,8 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
         } catch (err) {
             console.error(err);
             setErrorMsg("通信エラーが発生しました。時間を空けて再度お試しください。");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -248,14 +252,14 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
 
                     <button
                         type="submit"
-                        disabled={!isRequiredFieldsFilled}
+                        disabled={!isRequiredFieldsFilled || isLoading}
                         className={`w-full py-4 rounded-xl font-bold text-white transition-all duration-200 shadow-lg
                             ${isRequiredFieldsFilled
                                 ? "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 shadow-blue-200 transform active:scale-[0.98]"
                                 : "bg-gray-300 cursor-not-allowed shadow-none"
                             }`}
                     >
-                        作成する
+                        {isLoading ? "作成中..." : "作成する"}
                     </button>
                 </form>
             </div>
