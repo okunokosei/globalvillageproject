@@ -22,6 +22,10 @@ export type Notice = {
     created_at: string;
 };
 
+export type EventImage = {
+    id: number;
+    image: string;
+}
 
 export type Event = {
     id: number;
@@ -33,7 +37,7 @@ export type Event = {
     date: string;
     start_time: string;
     end_time: string;
-    cover_image: string | null;
+    images: EventImage[]
     google_form_url: string | null;
 
 }

@@ -1,6 +1,7 @@
 import { Event } from "../../types";
 
 const EventCard = ({event, onClick}: {event: Event, onClick: () => void}) => {
+    const firstImageUrl = event.images?.[0]?.image;
     const dateObj = new Date(event.date);
     const month = dateObj.toLocaleDateString('en-US', {month: 'short'}).toUpperCase();
     const day = dateObj.toLocaleDateString('en-US', {day: 'numeric'})
@@ -30,8 +31,8 @@ const EventCard = ({event, onClick}: {event: Event, onClick: () => void}) => {
                 </div>
                 {/* 右側 */}
                 <div className="h-24 w-24 rounded-lg shrink-0 overflow-hidden">
-                    {event.cover_image && (
-                        <img src={event.cover_image} alt="" className="w-full h-full object-cover"/>
+                    {firstImageUrl && (
+                        <img src={firstImageUrl} alt="" className="w-full h-full object-cover"/>
                     )}
                 </div>
             </button>
