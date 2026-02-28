@@ -17,9 +17,11 @@ const NavLink = ({ href, label }: NavLinkProps) => {
 
 const DashboardLayout = ({children} : { children: React.ReactNode }) => {
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            <main>{ children }</main>
-            <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50 h-16 safe-area-pb">
+        <div className="h-[100dvh] w-full bg-gray-50 flex flex-col overflow-hidden relative">
+            <main className="flex-1 overflow-y-auto hide-scrollbar">
+                { children }
+            </main>
+            <nav className="shrink-0 w-full bg-white border-t border-gray-200 z-50 h-16 safe-area-pb">
                 <div className="grid grid-cols-4 h-full">
                     <NavLink href="/dashboard" label="Home" />
                     <NavLink href="/dashboard/event" label="Event" />
