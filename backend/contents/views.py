@@ -22,13 +22,33 @@ class NoticeListView(generics.ListCreateAPIView):
         images_data = self.request.FILES.getlist('images')
         for image_data in images_data[:3]:
             NoticeImage.objects.create(notice=notice, image=image_data)
+
+
+class NoticeDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Notice.objects.all()
+    serializer_class = NoticeSerializer
+
+    def get_permission(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticatedOrReadOnly()]
+        return [IsRoleAdmin()]
     
     def perform_update(self, serializer):
         serializer.save(updated_by=self.request.user)
 
+
 class NoticeTagListView(generics.ListAPIView):
     queryset = NoticeTag.objects.all()
     serializer_class = NoticeTagSerializer
+
+
+
+
+
+
+
+
+
 
 # パターン1：完全自動お任せコース（基本形）
 # 条件:
