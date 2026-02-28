@@ -91,6 +91,8 @@ const GalleryPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string|null>(null);
 
+    const sortedGallery = galleries.sort((a,b) => b.event_date.localeCompare(a.event_date));
+
     const fetchGalleries = async () => {
         try {
             setIsLoading(true);
@@ -141,7 +143,7 @@ const GalleryPage = () => {
 
             <div className="px-4 pb-24 pt-2">
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                    {galleries.map((gallery) => (
+                    {sortedGallery.map((gallery) => (
                         <GalleryItem 
                             key={gallery.id}
                             gallery={gallery}
