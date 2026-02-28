@@ -56,6 +56,7 @@ export const MOCK_USER: UserProfileType ={
     move_in_date: "2024-04-01",
     move_out_date: "2025-03-31",
     icon: "https://i.pravatar.cc/300?img=11",
+    role: 'Resident',
 };
 
 export const MOCK_MY_JOINED_EVENTS: Event[] = [

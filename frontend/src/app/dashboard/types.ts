@@ -52,6 +52,7 @@ export type UserProfileType = {
     move_in_date: string; 
     move_out_date: string; 
     icon: string | null; 
+    role: 'Admin'|'Resident';
 };
 
 export type GalleryType = {

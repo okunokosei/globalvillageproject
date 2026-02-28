@@ -7,6 +7,8 @@ import CreateNoticeModal from "./modals/CreateNoticeModal";
 import CreateEventModal from "./modals/CreateEventModal";
 import CreateGalleryModal from "./modals/CreateGalleryModal";
 
+import { useUser } from "../../../contexts/UserContext";
+
 const NewPostButton = ({label, icon, onClick}: {label: string, icon:React.ReactNode, onClick: () => void}) => {
     return (
         <button
@@ -23,6 +25,14 @@ const AdminFab = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [ActiveModal, setActiveModal] = useState<"notice"|"event"|"album"|null>(null);
+
+    const { user, isLoading } = useUser();
+
+    if(isLoading || !user) return null;
+
+    if(user.role !== 'Admin') {
+        return null;
+    }
 
     const handleMenuClick = (modalType: "notice"|"event"|"album") => {
         setActiveModal(modalType);
