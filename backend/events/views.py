@@ -6,10 +6,18 @@ from rest_framework.views import APIView
 from .models import Events, EventImage
 from .serializers import EventSerializer
 
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from accounts.permissions import IsRoleAdmin
+
 # Create your views here.
 class EventListCreateView(generics.ListCreateAPIView):
     queryset = Events.objects.all().order_by('date', 'start_time')
     serializer_class = EventSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticatedOrReadOnly()]
+        return [IsRoleAdmin()]
 
     def perform_create(self, serializer):
         event = serializer.save(created_by=self.request.user, updated_by=self.request.user)

@@ -1,5 +1,8 @@
 from django.shortcuts import render
 
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from accounts.permissions import IsRoleAdmin
+
 from rest_framework import generics
 from .models import Notice, NoticeTag, NoticeImage
 from .serializers import NoticeSerializer, NoticeTagSerializer
@@ -7,6 +10,11 @@ from .serializers import NoticeSerializer, NoticeTagSerializer
 class NoticeListView(generics.ListCreateAPIView):
     queryset = Notice.objects.all().order_by('-is_pinned', '-created_at')
     serializer_class = NoticeSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticatedOrReadOnly()]
+        return [IsRoleAdmin()]
 
     def perform_create(self, serializer):
         notice = serializer.save(created_by=self.request.user, updated_by=self.request.user)
