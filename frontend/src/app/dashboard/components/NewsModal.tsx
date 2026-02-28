@@ -1,8 +1,53 @@
-import { Pin } from "lucide-react";
+import { Pin, MoreVertical, Edit, Trash2 } from "lucide-react";
 import ModalBase from "./ModalBase";
 import { Notice } from "../types";
+import {useUser } from "../../../contexts/UserContext";
+import toast from "react-hot-toast";
+import Cookies from "js-cookie";
+import { useState } from "react";
+import ConfirmModal from "../components/profile/ConfirmModal";
 
-const NewsDetailModal = ({notice, onClose}: {notice: Notice, onClose: () => void }) => {
+const NewsDetailModal = ({notice, onClose, onUpdate}: {notice: Notice, onClose: () => void, onUpdate: () => void }) => {
+    const { user } = useUser();
+    const isAdmin = user?.role === 'Admin';
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+    const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+
+    const handleDelete = async () => {
+        setIsDeleting(true);
+        try {
+            const token = Cookies.get('accessToken');
+            const res = await fetch(`${BACKEND_URL}/api/notices/${notice.id}/`, {
+                method: 'DELETE',
+                headers: {
+                    ...(token ? {'Authorization': `Bearer ${token}`} : {})
+                }
+            });
+
+            if(res.ok) {
+                toast.success("お知らせを削除しました");
+                onClose();
+                onUpdate();
+            } else {
+                toast.error("削除に失敗しました");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("通信エラーが発生しました")
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const handleEdit = () => {
+        setIsMenuOpen(false);
+    };
+
     return (
         <ModalBase onClose={onClose} maxWidth="max-w-md">
             {notice.images && notice.images.length > 0 && (
@@ -35,8 +80,37 @@ const NewsDetailModal = ({notice, onClose}: {notice: Notice, onClose: () => void
                 </div>
             )}
 
-            <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
+            <div className="p-6 relative bg-white">
+                {isAdmin && (
+                    <div className="absolute top-4 right-4 z-10">
+                        <button
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
+                        >
+                            <MoreVertical size={20} />
+                        </button>
+                        {isMenuOpen && (
+                            <div className="absolute right-0 mt-1 w-36 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden animate-in fade-in zoom-in-95 duration-100 origin-top-right">
+                                <button
+                                    onClick={handleEdit}
+                                    className="w-full flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-50"
+                                >
+                                    <Edit size={16} className="text-blue-500" />
+                                    編集する
+                                </button>
+                                <button
+                                    onClick={() => setIsDeleteOpen(true)}
+                                    disabled={isDeleting}
+                                    className="w-full flex items-center gap-2 px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                                >
+                                    <Trash2 size={16} />
+                                    {isDeleting ? "削除中..." : "削除する"}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+                <div className="flex items-center gap-2 mb-3 pr-10">
                     {notice.is_pinned && <Pin size={16} className="text-blue-500 fill-blue-300 shrink-0" />}
                     <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-blue-500 text-white border border-blue-500 shrink-0">{notice.tag.name}</span>
                 </div>
@@ -48,6 +122,16 @@ const NewsDetailModal = ({notice, onClose}: {notice: Notice, onClose: () => void
                     {notice.body_jp}
                 </div>
             </div>
+            <ConfirmModal 
+                isOpen={isDeleteOpen}
+                onClose={() => setIsDeleteOpen(false)}
+                onConfirm={handleDelete}
+                title="Delete Notice"
+                message="Are you sure? This action cannot be undone and the notice will be permanently removed."
+                confirmText="Delete Notice"
+                isDanger={true}
+                transparentOverlay={true}
+            />
         </ModalBase>
     );
 };

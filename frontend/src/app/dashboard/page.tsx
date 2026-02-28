@@ -22,34 +22,35 @@ const HomePage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setIsLoading(true);
-                const token = Cookies.get('accessToken');
+    const fetchData = async () => {
+        try {
+            setIsLoading(true);
+            const token = Cookies.get('accessToken');
 
-                const noticesRes = await fetch(`${BACKEND_URL}/api/notices/`,{
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...(token ? {'Authorization': `Bearer ${token}`,} : {})
-                        // ()は優先順位のカッコ。[]は配列（順番が大事）。{}はオブジェクト（キーが大事）。
-                    }
-                });
-                if(!noticesRes.ok){
-                    throw new Error (`ニュース取得エラー${noticesRes.status}`);
+            const noticesRes = await fetch(`${BACKEND_URL}/api/notices/`,{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? {'Authorization': `Bearer ${token}`,} : {})
+                    // ()は優先順位のカッコ。[]は配列（順番が大事）。{}はオブジェクト（キーが大事）。
                 }
-                const noticesData = await noticesRes.json();
-
-                setNotices(noticesData.results);
-
-            }catch (err) {
-                console.error(err);
-                setError("データの読み込みに失敗しました。時間を空けて再度お試しください。")
-            }finally {
-                setIsLoading(false);
+            });
+            if(!noticesRes.ok){
+                throw new Error (`ニュース取得エラー${noticesRes.status}`);
             }
-        };
+            const noticesData = await noticesRes.json();
+
+            setNotices(noticesData.results);
+
+        }catch (err) {
+            console.error(err);
+            setError("データの読み込みに失敗しました。時間を空けて再度お試しください。")
+        }finally {
+            setIsLoading(false);
+        }
+    };
+    
+    useEffect(() => {
         fetchData();
     }, [])
 
@@ -83,7 +84,7 @@ const HomePage = () => {
 
             {/* 詳細 */}
             {selectedNotice && (
-                <NewsDetailModal notice={selectedNotice} onClose={() => setSelectedNotice(null)} />
+                <NewsDetailModal notice={selectedNotice} onClose={() => setSelectedNotice(null)} onUpdate={() => fetchData()} />
             )}
         </div>
     )
