@@ -6,6 +6,8 @@ import Cookies from 'js-cookie';
 
 import Link from 'next/link';
 
+import toast from 'react-hot-toast';
+
 const LoginPage = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const router = useRouter();
@@ -28,14 +30,17 @@ const LoginPage = () => {
                 const data = await res.json();
                 Cookies.set('accessToken', data.access, { expires: 1 });
                 Cookies.set('refreshToken', data.refresh, { expires: 7 });
-                alert('ログイン成功！');
+                // alert('ログイン成功！');
+                toast.success('ログインしました！');
                 router.push('/dashboard');
             } else {
-                alert('メールアドレスまたはパスワードが間違っています。')
+                // alert('メールアドレスまたはパスワードが間違っています。')
+                toast.error('メールアドレスまたはパスワードが間違っています。');
             }
         } catch (err) {
             console.error(err);
-            alert('ログイン処理に失敗しました。');
+            // alert('ログイン処理に失敗しました。');
+            toast.error('通信エラーが発生しました。');
         }
     };
 

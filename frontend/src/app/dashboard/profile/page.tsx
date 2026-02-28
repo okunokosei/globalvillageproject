@@ -8,6 +8,7 @@ import Header from "../components/Header";
 import UserProfile from "../components/profile/UserProfile";
 import EditProfileModal from "../components/profile/EditProfileModal";
 import { Pencil, LogOut, Trash2 } from "lucide-react";
+import toast from 'react-hot-toast';
 
 const MenuButton = ({icon, label, onClick, isDanger}: any) => {
     return (
@@ -100,7 +101,8 @@ const ProfilePage = () => {
     const handleLogout = () => {
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
-        alert('ログアウトしました。');
+        // alert('ログアウトしました。');
+        toast.success('ログアウトしました。');
         router.push('/login');
     };
 
