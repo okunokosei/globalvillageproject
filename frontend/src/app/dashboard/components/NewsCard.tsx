@@ -36,7 +36,7 @@ const NewsCard = ({notice, onClick}: {notice: Notice, onClick: () => void}) => {
             {/* 右 */}
             <div className="w-24 h-24 rounded-lg shrink-0 overflow-hidden border border-gray-100 bg-gray-50">
                 {firstImageUrl && (
-                    <img src={firstImageUrl} alt="" className="w-full h-full object-cover"/>
+                    <img src={firstImageUrl} alt="" className="w-full h-full object-cover" loading="lazy"/>
                 )}
             </div>
         </button>

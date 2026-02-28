@@ -32,7 +32,7 @@ const EventCard = ({event, onClick}: {event: Event, onClick: () => void}) => {
                 {/* 右側 */}
                 <div className="h-24 w-24 rounded-lg shrink-0 overflow-hidden">
                     {firstImageUrl && (
-                        <img src={firstImageUrl} alt="" className="w-full h-full object-cover"/>
+                        <img src={firstImageUrl} alt="" className="w-full h-full object-cover" loading="lazy"/>
                     )}
                 </div>
             </button>
