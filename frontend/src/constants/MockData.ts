@@ -14,7 +14,7 @@ export const MOCK_EVENTS: Event[] = [
     date: "2026-02-13", // スクリショのカレンダーで選択されていた日に合わせました
     start_time: "18:00",
     end_time: "21:00",
-    cover_image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=800&auto=format&fit=crop", // 仮のフリー画像URL
+    images: [],
     google_form_url: "https://forms.gle/dummy",
   },
   {
@@ -27,7 +27,7 @@ export const MOCK_EVENTS: Event[] = [
     date: "2026-02-15",
     start_time: "10:00",
     end_time: "13:00",
-    cover_image: null,
+    images: [],
     google_form_url: "https://forms.gle/dummy",
   },
   {
@@ -40,7 +40,7 @@ export const MOCK_EVENTS: Event[] = [
     date: "2026-02-25",
     start_time: "09:00",
     end_time: "11:00",
-    cover_image: null, 
+    images: [],
     google_form_url: "https://forms.gle/dummy",
   },
 ];
@@ -72,7 +72,7 @@ export const MOCK_MY_JOINED_EVENTS: Event[] = [
         date: "2026-02-20", // 5日後
         start_time: "19:00",
         end_time: "22:00",
-        cover_image: "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?q=80&w=2070&auto=format&fit=crop",
+        images: [],
         google_form_url: "https://forms.gle/dummy",
     },
     // 2. 3月のイベント (Hinamatsuri)
@@ -86,7 +86,7 @@ export const MOCK_MY_JOINED_EVENTS: Event[] = [
         date: "2026-03-03",
         start_time: "18:00",
         end_time: "20:00",
-        cover_image: "https://plus.unsplash.com/premium_photo-1661632731518-202d6447c645?q=80&w=2070&auto=format&fit=crop",
+        images: [],
         google_form_url: "https://forms.gle/dummy",
     },
     // 3. 4月のイベント (Hanami)
@@ -100,7 +100,7 @@ export const MOCK_MY_JOINED_EVENTS: Event[] = [
         date: "2026-04-05",
         start_time: "11:00",
         end_time: "15:00",
-        cover_image: "https://images.unsplash.com/photo-1522383225653-ed111181a951?q=80&w=2076&auto=format&fit=crop",
+        images: [],
         google_form_url: "https://forms.gle/dummy",
     },
 
@@ -117,7 +117,7 @@ export const MOCK_MY_JOINED_EVENTS: Event[] = [
         date: "2026-02-14", // 昨日
         start_time: "14:00",
         end_time: "17:00",
-        cover_image: "https://images.unsplash.com/photo-1548848221-0c2e497ed557?q=80&w=2070&auto=format&fit=crop",
+        images: [],
         google_form_url: "https://forms.gle/dummy",
     },
     // 5. 1月のイベント (Calligraphy)
@@ -131,7 +131,7 @@ export const MOCK_MY_JOINED_EVENTS: Event[] = [
         date: "2026-01-10",
         start_time: "10:00",
         end_time: "12:00",
-        cover_image: "https://images.unsplash.com/photo-1583144362846-52c676718449?q=80&w=2070&auto=format&fit=crop",
+        images: [],
         google_form_url: "https://forms.gle/dummy",
     },
     // 6. 去年のイベント (Christmas)
@@ -145,7 +145,7 @@ export const MOCK_MY_JOINED_EVENTS: Event[] = [
         date: "2025-12-25",
         start_time: "18:00",
         end_time: "22:00",
-        cover_image: "https://images.unsplash.com/photo-1512474932049-782abb8be239?q=80&w=2070&auto=format&fit=crop",
+        images: [],
         google_form_url: "https://forms.gle/dummy",
 
     }
