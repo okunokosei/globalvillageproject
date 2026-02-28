@@ -270,12 +270,12 @@ const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
                                 {imageFiles.length} / {MAX_IMAGES}枚
                             </span>
                         </div>
-                        <div className="bg-gray-50 border-border-gray-200 rounded-xl p-4">
+                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
                             {previewUrls.length > 0 && (
                                 <div className="flex flex-wrap gap-3 mb-3">
                                     {previewUrls.map((url, index) => (
                                         <div key={index} className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shadow-sm group" >
-                                            <img src={url} alt={`PReview ${index}`} className="w-full h-full object-cover" />
+                                            <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
                                             <button
                                                 type="button"
                                                 onClick={() => removeImage(index)}

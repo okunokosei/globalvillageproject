@@ -7,8 +7,11 @@ import { Event }  from "../../types";
 import Cookies from 'js-cookie';
 import ModalBase from "../ModalBase";
 
+import { X, Image as ImageIcon } from "lucide-react";
+
 const CreateEventModal = ({onClose}: {onClose: () => void}) => {
     const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+    const MAX_IMAGES = 3;
 
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -22,8 +25,10 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
     const [date, setDate] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
-    const [coverImage, setCoverImage] = useState<File | null>(null);
     const [googleFormUrl, setGoogleFormUrl] = useState('');
+
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
     const isRequiredFieldsFilled = titleEn && titleJp && descriptionEn && descriptionJp && location && date && startTime && endTime;
 
@@ -43,9 +48,10 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
         formData.append('date', date);
         formData.append('start_time', startTime);
         formData.append('end_time', endTime);
-        if (coverImage){
-            formData.append('cover_image', coverImage);
-        }
+        imageFiles.forEach((file) => {
+            formData.append('images', file);
+        });
+
         formData.append('google_form_url', googleFormUrl);
 
         const token = Cookies.get('accessToken')
@@ -78,6 +84,27 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
 
     const inputClassName = "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm";
     const labelClassName = "block text-sm font-bold text-gray-700 mb-1.5";
+
+    const handleImageCange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if(e.target.files){
+            const newFiles = Array.from(e.target.files);
+            const combinedFiles = [...imageFiles, ...newFiles].slice(0, MAX_IMAGES);
+            setImageFiles(combinedFiles);
+            const newPreviewUrls = combinedFiles.map(file => URL.createObjectURL(file));
+            setPreviewUrls(newPreviewUrls)
+        }
+        e.target.value='';
+    };
+
+    const removeImage = (indexToRemove: number) => {
+        const filteredFiles = imageFiles.filter((_,index) => index !== indexToRemove);
+        setImageFiles(filteredFiles);
+
+        URL.revokeObjectURL(previewUrls[indexToRemove]);
+
+        const filteredPreviewUrls = previewUrls.filter((_, index) => index !== indexToRemove);
+        setPreviewUrls(filteredPreviewUrls);
+    };
 
     const renderContent = () => {
         if(successMsg) {
@@ -198,45 +225,46 @@ const CreateEventModal = ({onClose}: {onClose: () => void}) => {
                     <div className="border-t border-gray-100 my-2"></div>
 
                     <div>
-                        <label className={labelClassName}>カバー画像</label>
-                        <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200
-                            ${coverImage
-                                ? "border-blue-400 bg-blue-50 hover:bg-blue-100"
-                                : "border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-blue-400"
-                            }`}
-                        >
-                            {coverImage ? (
-                                <div className="flex flex-col items-center justify-center p-4 text-center">
-                                    <div className="w-10 h-10 mb-2 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 shadow-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <polyline points="20 6 9 17 4 12"></polyline>
-                                        </svg>
-                                    </div>
-                                    <p className="text-sm font-bold text-blue-700 truncate max-w-xs px-2">
-                                        {coverImage.name}
-                                    </p>
-                                    <p className="text-xs text-blue-500 mt-1">クリックして別の画像に変更</p>
-                                </div>
-                            ):(
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <svg className="w-8 h-8 mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                                    </svg>
-                                    <p className="text-sm text-gray-500"><span className="font-bold text-blue-600">クリックしてファイルを選択</span></p>
-                                    <p className="text-xs text-gray-400 mt-1">PNG, JPG, GIF など</p>
+                        <div className="flex justify-between items-end mb-1.5">
+                            <label className="block text-sm font-bold text-gray-700">添付画像</label>
+                            <span className="text-xs text-gray-500 font-medium">
+                                {imageFiles.length} / {MAX_IMAGES}枚
+                            </span>
+                        </div>
+                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                            {previewUrls.length > 0 && (
+                                <div className="flex flex-wrap gap-3 mb-3">
+                                    {previewUrls.map((url, index) => (
+                                        <div key={index} className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200 shadow-sm group">
+                                            <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeImage(index)}
+                                                className="absolute top-1 right-1 bg-balck/50 text-white rounded-full p-1 opacity-80 hover:opacity-100 hover:bg-red-500 transition-all"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
-                            <input 
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                    if(e.target.files && e.target.files[0]){
-                                        setCoverImage(e.target.files[0]);
-                                    }
-                                }}
-                                className="hidden"
-                            />
-                        </label>
+
+                            {imageFiles.length < MAX_IMAGES && (
+                                <label className="flex flex-col items-center justify-center w-full h-24 border border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-white hover:border-blue-400 transition-colors">
+                                    <div className="flex flex-col items-center justify-center pt-5 pb-6 text-gray-400">
+                                        <ImageIcon size={24} className="mb-2" />
+                                        <p className="text-sm font-medium"><span className="text-blue-600">クリック</span>して写真を追加</p>
+                                    </div>
+                                    <input 
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={handleImageCange}
+                                        className="hidden"
+                                    />
+                                </label>
+                            )}
+                        </div>
                     </div>
 
                     <div>
