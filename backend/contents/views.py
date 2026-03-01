@@ -28,14 +28,25 @@ class NoticeDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Notice.objects.all()
     serializer_class = NoticeSerializer
 
-    def get_permission(self):
+    def get_permissions(self):
         if self.request.method == 'GET':
             return [IsAuthenticatedOrReadOnly()]
         return [IsRoleAdmin()]
+        
     
     def perform_update(self, serializer):
-        serializer.save(updated_by=self.request.user)
+        notice = serializer.save(updated_by=self.request.user)
 
+        deleted_image_ids = self.request.data.getlist('deleted_image_ids')
+        if deleted_image_ids:
+            NoticeImage.objects.filter(notice=notice, id__in=deleted_image_ids).delete()
+
+        new_images_data = self.request.FILES.getlist('new_images')
+        current_image_count = NoticeImage.objects.filter(notice=notice).count()
+        available_slots = 3 - current_image_count
+        if available_slots > 0:
+            for image_data in new_images_data[:available_slots]:
+                NoticeImage.objects.create(notice=notice, image=image_data)
 
 class NoticeTagListView(generics.ListAPIView):
     queryset = NoticeTag.objects.all()
