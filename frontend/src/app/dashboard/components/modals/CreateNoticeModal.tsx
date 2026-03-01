@@ -55,7 +55,6 @@ const CreateNoticeModal = ({onClose}: {onClose: () => void}) => {
                     throw new Error (`ニュース取得エラー${noticeTagsRes.status}`);
                 }
                 const noticeTagsData = await noticeTagsRes.json();
-
                 setNoticeTags(noticeTagsData.results);
                 console.log("getTags :", noticeTagsData);
             }catch (err) {

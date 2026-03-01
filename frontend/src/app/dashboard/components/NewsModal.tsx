@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import ConfirmModal from "../components/profile/ConfirmModal";
+import EditNoticeModal from "./EditNoticeModal";
 
 const NewsDetailModal = ({notice, onClose, onUpdate}: {notice: Notice, onClose: () => void, onUpdate: () => void }) => {
     const { user } = useUser();
@@ -15,6 +16,8 @@ const NewsDetailModal = ({notice, onClose, onUpdate}: {notice: Notice, onClose: 
     const [isDeleting, setIsDeleting] = useState(false);
 
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+    const [isEditOpen, setIsEditOpen] = useState(false);
 
     const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -46,6 +49,7 @@ const NewsDetailModal = ({notice, onClose, onUpdate}: {notice: Notice, onClose: 
 
     const handleEdit = () => {
         setIsMenuOpen(false);
+        setIsEditOpen(true);
     };
 
     return (
@@ -132,6 +136,16 @@ const NewsDetailModal = ({notice, onClose, onUpdate}: {notice: Notice, onClose: 
                 isDanger={true}
                 transparentOverlay={true}
             />
+            {isEditOpen && (
+                <EditNoticeModal 
+                    notice={notice}
+                    onClose={() => setIsEditOpen(false)}
+                    onUpdate={() => {
+                        onUpdate();
+                        onClose();
+                    }}
+                />
+            )}
         </ModalBase>
     );
 };
