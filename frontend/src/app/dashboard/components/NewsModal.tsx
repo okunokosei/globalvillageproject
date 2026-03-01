@@ -9,6 +9,9 @@ import ConfirmModal from "../components/profile/ConfirmModal";
 import EditNoticeModal from "./EditNoticeModal";
 
 const NewsDetailModal = ({notice, onClose, onUpdate}: {notice: Notice, onClose: () => void, onUpdate: () => void }) => {
+    
+    const hasImages = notice.images && notice.images.length > 0;
+
     const { user } = useUser();
     const isAdmin = user?.role === 'Admin';
 
@@ -54,7 +57,7 @@ const NewsDetailModal = ({notice, onClose, onUpdate}: {notice: Notice, onClose: 
 
     return (
         <ModalBase onClose={onClose} maxWidth="max-w-md">
-            {notice.images && notice.images.length > 0 && (
+            {hasImages && (
                 <div className="relative w-full h-64 bg-transparent">
                     <div className="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar">
                         {notice.images.map((img) => (
@@ -86,7 +89,7 @@ const NewsDetailModal = ({notice, onClose, onUpdate}: {notice: Notice, onClose: 
 
             <div className="p-6 relative bg-white">
                 {isAdmin && (
-                    <div className="absolute top-4 right-4 z-10">
+                    <div className={`absolute top-4 z-10 transition-all duration-200 ${hasImages ? 'right-4' : 'right-14'}`} >
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
