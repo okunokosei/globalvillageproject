@@ -2,7 +2,7 @@
 
 import {useRouter} from 'next/navigation';
 import Cookies from 'js-cookie';
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { UserProfileType } from "../types";
 import Header from "../components/Header";
 import UserProfile from "../components/profile/UserProfile";
@@ -11,7 +11,12 @@ import ConfirmModal from "../components/profile/ConfirmModal";
 import { Pencil, LogOut, Trash2 } from "lucide-react";
 import toast from 'react-hot-toast';
 
-const MenuButton = ({icon, label, onClick, isDanger}: any) => {
+const MenuButton = ({icon, label, onClick, isDanger}: {
+    icon: ReactNode;
+    label: string;
+    onClick: () => void;
+    isDanger?: boolean;
+}) => {
     return (
         <button
             onClick={onClick}

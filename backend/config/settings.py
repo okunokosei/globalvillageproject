@@ -18,6 +18,9 @@ from datetime import timedelta
 env = environ.Env()
 env.read_env(os.path.join(Path(__file__).resolve().parent.parent, '.env'))
 
+# Explicitly opt in to a disposable, offline portfolio demo.
+LOCAL_DEMO = env.bool('LOCAL_DEMO', default=False)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,12 +30,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = ('local-demo-only-not-for-deployment' if LOCAL_DEMO else env('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver'] if LOCAL_DEMO else ['*']
 
 
 # Application definition
@@ -102,7 +105,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # }
 
 DATABASES = {
-    'default': env.db(),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'demo.sqlite3',
+    } if LOCAL_DEMO else env.db(),
 }
 
 
@@ -148,14 +154,14 @@ AUTH_USER_MODEL = 'accounts.User'
 # Cloudflare R2 Storage Settings
 # -------------------------------------
 # 認証
-AWS_ACCESS_KEY_ID = env('R2_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = env('R2_SECRET_ACCESS_KEY')
+AWS_ACCESS_KEY_ID = '' if LOCAL_DEMO else env('R2_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = '' if LOCAL_DEMO else env('R2_SECRET_ACCESS_KEY')
 # 倉庫の中の「どの箱（バケット）」を使うか指定しています。
-AWS_STORAGE_BUCKET_NAME = env('R2_STORAGE_BUCKET_NAME')
+AWS_STORAGE_BUCKET_NAME = '' if LOCAL_DEMO else env('R2_STORAGE_BUCKET_NAME')
 # R2のAPIの場所
-AWS_S3_ENDPOINT_URL = env('R2_S3_ENDPOINT_URL')
+AWS_S3_ENDPOINT_URL = '' if LOCAL_DEMO else env('R2_S3_ENDPOINT_URL')
 # 公開用ドメイン
-AWS_S3_CUSTOM_DOMAIN = env('R2_PUBLIC_DOMAIN')
+AWS_S3_CUSTOM_DOMAIN = '' if LOCAL_DEMO else env('R2_PUBLIC_DOMAIN')
 # 期限付きURLにしない設定
 AWS_QUERYSTRING_AUTH = False
 
@@ -174,6 +180,14 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+if LOCAL_DEMO:
+    MEDIA_ROOT = BASE_DIR / 'demo-media'
+    MEDIA_URL = '/media/'
+    STORAGES = {
+        'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    }
 
 CSRF_TRUSTED_ORIGINS = ['https://gv-life-backend-405456730895.asia-northeast1.run.app']
 
@@ -218,8 +232,8 @@ DJOSER = {
     'ACTIVATION_URL': 'activate/{uid}/{token}',
 
     'EMAIL_FRONTEND_SITE_NAME': 'Global Village Project',
-    'EMAIL_FRONTEND_DOMAIN': env('FRONTEND_DOMAIN'),
-    'EMAIL_FRONTEND_PROTOCOL': env('FRONTEND_PROTOCOL'),
+    'EMAIL_FRONTEND_DOMAIN': 'localhost:3000' if LOCAL_DEMO else env('FRONTEND_DOMAIN'),
+    'EMAIL_FRONTEND_PROTOCOL': 'http' if LOCAL_DEMO else env('FRONTEND_PROTOCOL'),
 
     'SERIALIZERS': {
         'user_create_password_retype': 'accounts.serializers.FinalUserCreateSerializer',

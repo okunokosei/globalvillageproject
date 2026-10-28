@@ -1,7 +1,7 @@
 import { Event } from "../../types";
 import EventCard from "./EventCard";
 
-const DailyEventList = ({date, events, onOpenModal}: {date: any, events: Event[], onOpenModal: (e: Event) => void}) => {
+const DailyEventList = ({date, events, onOpenModal}: {date: Date, events: Event[], onOpenModal: (e: Event) => void}) => {
     // カレンダーコンポーネントからはDate型で送られてくる->string型に変更
     // その際、時差によって日付がずれないように注意している。
     const offset = date.getTimezoneOffset()*60000;

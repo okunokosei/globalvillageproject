@@ -15,7 +15,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 
 const HomePage = () => {
-    const [selectedNotice, setSelectedNotice] = useState<any | null>(null);
+    const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 
     const [notices, setNotices] = useState<Notice[]>([]);
 

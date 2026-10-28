@@ -20,3 +20,9 @@ env/
 # --- Node.js / Frontend (将来用) ---
 node_modules/
 .next/
+
+# Local portfolio demo
+.venv/
+demo.sqlite3*
+demo-media/
+staticfiles/
